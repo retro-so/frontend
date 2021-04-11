@@ -1,25 +1,30 @@
 import { Suspense } from 'react'
 import { Router } from 'react-router'
 import { render } from 'react-dom'
-import { configureRootTheme } from '@yandex/ui/Theme'
-import { theme } from '@yandex/ui/Theme/presets/default'
 
 import { Pages } from './pages'
+import { GlobalStyles } from './GlobalStyles'
 import reportWebVitals from './reportWebVitals'
 import { history } from './libs/history'
-import './libs/firebase'
-import './index.css'
+import { readyToLoadSession } from './features/session'
+import { LegoThemeProvider } from './components/LegoThemeProvider'
+import { PageLoading } from './components/PageLoading'
 
-configureRootTheme({ theme })
-
-render(
-  <Router history={history}>
-    <Suspense fallback="Loading...">
-      <Pages />
-    </Suspense>
-  </Router>,
-  document.getElementById('root'),
-)
+readyToLoadSession().then(() => {
+  render(
+    <>
+      <GlobalStyles />
+      <LegoThemeProvider>
+        <Router history={history}>
+          <Suspense fallback={<PageLoading />}>
+            <Pages />
+          </Suspense>
+        </Router>
+      </LegoThemeProvider>
+    </>,
+    document.getElementById('root'),
+  )
+})
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
