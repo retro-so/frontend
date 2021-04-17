@@ -15,4 +15,4 @@ const sessionCreateFx = createEffect(signIn)
 checkIsNotAuthenticated({ when: LoginGate.open })
 
 forward({ from: login, to: sessionCreateFx })
-forward({ from: sessionCreateFx.done, to: pushHistoryFx.prepend(paths.board) })
+forward({ from: sessionCreateFx.done, to: pushHistoryFx.prepend(paths.boards) })
