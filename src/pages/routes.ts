@@ -14,4 +14,9 @@ export const routes: RouteConfig[] = [
     exact: true,
     component: lazy(() => import('./BoardPage')),
   },
+  {
+    path: paths.boards(),
+    exact: true,
+    component: lazy(() => import('./BoardsPage')),
+  },
 ]
