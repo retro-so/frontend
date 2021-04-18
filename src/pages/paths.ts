@@ -1,5 +1,5 @@
 export const paths = {
-  board: () => '/',
+  board: (id = ':id') => `/${id}`,
   boards: () => '/boards',
   login: () => '/login',
 }
