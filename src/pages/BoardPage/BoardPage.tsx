@@ -1,17 +1,31 @@
 import { FC } from 'react'
 import { useGate, useStore } from 'effector-react'
+import { useParams } from 'react-router'
 
-import { BoardGate } from './model'
-import { $session } from '../../features/session'
+import { $board, BoardGate } from './model'
+
+// TODO: Move this type to paths file.
+type RouteParams = { id: string }
 
 export const BoardPage: FC = () => {
-  useGate(BoardGate)
-  const session = useStore($session)
+  const params = useParams<RouteParams>()
+  useGate(BoardGate, { id: params.id })
+  const board = useStore($board)
 
-  return (
+  if (!board) {
+    return <div>Loading...</div>
+  }
+
+  return <div>
     <div>
-      Board page
-      <div>Hello, {session?.displayName || 'Anonymous'}</div>
+      {board.boardName}
     </div>
-  )
+    <div>
+      {board.columns.map((column) => (
+        <div key={column.name}>
+          {column.name}
+        </div>
+      ))}
+    </div>
+  </div>
 }
