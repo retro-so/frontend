@@ -3,3 +3,5 @@ export const paths = {
   boards: () => '/boards',
   login: () => '/login',
 }
+
+export type BoardRouteParams = { id: string }
