@@ -13,26 +13,38 @@ type Uuid = string
 type Board = { name: string; id: Uuid }
 export const $boards = createStore<Board[]>([])
 
-const createBoardFx = attach<any, any, any>({
+const createBoardFx = attach({
   source: $session,
-  mapParams: (boardName, session) => ({ boardName, session }),
+  mapParams: (boardName, session) => ({ boardName, userId: session?.uid }),
   effect: createEffect((params: any) => {
     const { boardName } = params
     // TODO: Generate short slug too.
-    const uuid = uuidv4()
+    const boardId = uuidv4()
+    const columnId = uuidv4()
 
     // TODO: Move to API layer.
-    database.ref(`users/${params.session.uid}/boards`).update({
-      [boardName]: uuid,
+    database.ref(`users/${params.userId}/boards`).update({
+      [boardName]: boardId,
     })
 
-    database.ref(`boards/${uuid}`).update({
+    database.ref(`boards/${boardId}`).update({
+      author: {
+        uid: params.userId,
+      },
+      id: boardId,
       boardName,
       settings: {
         shownLogins: true,
         shownContent: true,
       },
-      columns: [{ name: 'Welcome', color: '#ccc' }],
+      columns: {
+        [columnId]: {
+          id: columnId,
+          name: 'Welcome',
+          color: '#ccc',
+          cards: {},
+        }
+      },
     })
   }),
 })
