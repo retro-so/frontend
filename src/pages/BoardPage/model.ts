@@ -5,12 +5,14 @@ import { $session, checkIsAuthenticated } from '../../features/session'
 import type { Board } from '../../api/types'
 import { loadBoard } from '../../api/board'
 import { createCard, deleteCard } from '../../api/card'
+import { createColumn } from '../../api/column'
 
 export const BoardGate = createGate<LoadBoardFxParams>()
 export const $board = createStore<Board | null>(null)
 
 export const cardCreate = createEvent<{ columnId: string; content: string }>()
 export const cardDelete = createEvent<{ columnId: string; cardId: string }>()
+export const columnCreate = createEvent<{ name: string }>()
 const boardLoaded = createEvent<Board>()
 
 // FIXME: Fix type name.
@@ -43,6 +45,16 @@ const deleteCardFx = attach({
   }),
 })
 
+const createColumnFx = attach({
+  source: { board: $board },
+  mapParams: (data: any, { board }) => ({
+    ...data,
+    boardId: board?.id,
+  }),
+  effect: createEffect((params: any) => {
+    createColumn(params)
+  })
+})
 
 // TODO: Reset data before page loaded.
 // TODO: Handle not exists board.
@@ -52,3 +64,4 @@ checkIsAuthenticated({ when: BoardGate.open })
 forward({ from: BoardGate.open, to: loadBoardFx })
 forward({ from: cardCreate, to: createCardFx })
 forward({ from: cardDelete, to: deleteCardFx })
+forward({ from: columnCreate, to: createColumnFx })

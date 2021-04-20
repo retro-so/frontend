@@ -2,16 +2,16 @@ import { FC, useState } from 'react'
 import { useGate, useStore } from 'effector-react'
 import { useParams } from 'react-router'
 
+import { Column } from '../../components/Column'
 import { BoardRouteParams } from '../paths'
-import { $board, BoardGate, cardCreate, cardDelete } from './model'
+import { $board, BoardGate, cardCreate, cardDelete, columnCreate } from './model'
 
 export const BoardPage: FC = () => {
   const params = useParams<BoardRouteParams>()
   useGate(BoardGate, { id: params.id })
   const board = useStore($board)
 
-  const [value, setValue] = useState('')
-  const [isCreatorMode, setCreatorMode] = useState(false)
+  const [columnName, setColumnName] = useState('')
 
   if (!board) {
     return <div>Loading...</div>
@@ -24,43 +24,20 @@ export const BoardPage: FC = () => {
       <div>Users: ...</div>
       <hr />
       <div>
+        <button
+          onClick={() => {
+            columnCreate({ name: columnName })
+            setColumnName('')
+          }}
+        >
+          Create column
+        </button>
+        <input onChange={(event) => setColumnName(event.target.value)} value={columnName} />
+      </div>
+      <hr />
+      <div style={{ display: 'flex' }}>
         {Object.entries(board.columns).map(([_, column]) => (
-          <div key={column.name}>
-            {column.name}
-            <div>
-              {isCreatorMode && (
-                <div>
-                  <textarea value={value} onChange={(event) => setValue(event.target.value)} />
-                  <button
-                    onClick={() =>
-                      cardCreate({ content: value, columnId: column.id }) && setCreatorMode(false)
-                    }
-                  >
-                    Create
-                  </button>
-                  <button onClick={() => setCreatorMode(false)}>Cancel</button>
-                </div>
-              )}
-            </div>
-            <div>
-              {column.cards && Object.entries(column.cards).map(([_, card]) => (
-                <div key={card.id}>
-                  {card.content}
-                  <div>
-                    Author, {card.author.uid}
-                  </div>
-                  <div>
-                    <button onClick={() => {
-                      if (window.confirm('Delete this card?')) {
-                        cardDelete({ cardId: card.id, columnId: column.id })
-                      }
-                    }}>Delete</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => setCreatorMode(true)}>Add new card</button>
-          </div>
+          <Column key={column.id} {...column} cardCreate={cardCreate} cardDelete={cardDelete} />
         ))}
       </div>
     </div>

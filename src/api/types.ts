@@ -1,8 +1,19 @@
 type Author = { uid: UserId }
 type UserId = string
-export type Card = { id: string; content: string; author: Author }
-type Column = { id: string; color: string; name: string; cards: Card[] }
 type Settings = { shownContent: boolean; shownLogins: boolean }
+
+export type Card = {
+  id: string
+  content: string
+  author: Author
+}
+
+export type Column = {
+  id: string
+  color: string
+  name: string
+  cards?: Card[]
+}
 
 export type Board = {
   id: string
