@@ -26,6 +26,7 @@ export function createCard(params: CreateCardParams) {
     author: {
       uid: params.userId,
     },
+    solved: false,
   }
 
   return database
@@ -62,4 +63,29 @@ export async function deleteCard(params: DeleteCardParams): Promise<void> {
   }
 
   return cardRef.remove()
+}
+
+type UpdateCardParams = {
+  boardId: string
+  cardId: string
+  columnId: string
+  solved: boolean
+  content: string
+  userId: string
+}
+
+export async function updateCard(params: UpdateCardParams) {
+  const boardRef = database.ref(refs.board({ boardId: params.boardId }))
+  const cardRef = database.ref(
+    refs.card({ boardId: params.boardId, columnId: params.columnId, cardId: params.cardId }),
+  )
+
+  const card: Maybe<Card> = (await cardRef.get()).val()
+  const board: Maybe<Board> = (await boardRef.get()).val()
+
+  if (!card || !board) {
+    return Promise.reject()
+  }
+
+  cardRef.update({ solved: params.solved ?? card.solved, content: params.content ?? card.content })
 }

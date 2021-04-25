@@ -1,4 +1,4 @@
-type Author = { uid: UserId }
+export type Author = { uid: UserId }
 type UserId = string
 type Settings = { shownContent: boolean; shownLogins: boolean }
 
@@ -6,6 +6,7 @@ export type Card = {
   id: string
   content: string
   author: Author
+  solved: boolean
 }
 
 export type Column = {
