@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styled from '@emotion/styled'
-import {Button} from '@yandex/ui/Button/desktop/bundle'
+import { Button } from '@yandex/ui/Button/desktop/bundle'
 
 import { MoreIcon } from '../Icons/MoreIcon'
 import { EditIcon } from '../Icons/EditIcon'
