@@ -75,9 +75,4 @@ export const Container = styled.div`
       opacity: 1;
     }
   }
-
-  .Content {
-    margin-bottom: 8px;
-    white-space: pre;
-  }
 `

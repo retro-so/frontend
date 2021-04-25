@@ -27,4 +27,9 @@ export const StaticCardContent: FC<StaticCardContentProps> = (props) => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+
+  .Content {
+    margin-bottom: 8px;
+    white-space: pre;
+  }
 `
