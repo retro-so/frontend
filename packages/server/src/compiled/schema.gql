@@ -1,0 +1,59 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  provider: String!
+  login: String!
+  displayName: String!
+  email: String!
+  avatarUrl: String!
+}
+
+type Card {
+  id: ID!
+  index: Float!
+  content: String!
+  author: User!
+}
+
+type List {
+  id: ID!
+  index: Int!
+  name: String!
+  cards: [Card!]!
+}
+
+type Board {
+  id: ID!
+  owner: User!
+  name: String!
+  lists: [List!]!
+  createdAt: String!
+}
+
+type Query {
+  boards: [Board!]!
+  board(id: ID!): Board!
+}
+
+type Mutation {
+  createBoard(board: CreateBoardInput!): Board!
+  createList(list: CreateListInput!): List!
+  createCard(card: CreateCardInput!): Card!
+}
+
+input CreateBoardInput {
+  name: String!
+}
+
+input CreateListInput {
+  name: String!
+  board: ID!
+}
+
+input CreateCardInput {
+  content: String!
+  list: ID!
+}
