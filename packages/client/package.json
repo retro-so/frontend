@@ -1,5 +1,5 @@
 {
-  "name": "noname",
+  "name": "@retro/client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,34 +9,33 @@
     "@bem-react/di": "^2.2.5",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.3.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/react-router-config": "^5.0.2",
-    "@types/react-router-dom": "^5.1.7",
     "@yandex/ui": "^3.5.4",
-    "effector": "^21.8.11",
     "effector-react": "^21.3.2",
-    "firebase": "^8.3.3",
+    "effector": "^21.8.11",
     "graphql": "^15.5.0",
-    "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router": "^5.2.0",
     "react-router-config": "^5.1.1",
     "react-router-dom": "^5.2.0",
+    "react-router": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react": "^17.0.2",
     "typescript": "^4.1.2",
     "web-vitals": "^1.1.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.4",
-    "@graphql-codegen/typescript": "^1.22.0",
     "@graphql-codegen/typescript-operations": "^1.17.16",
-    "@graphql-codegen/typescript-react-apollo": "^2.2.4"
+    "@graphql-codegen/typescript-react-apollo": "^2.2.4",
+    "@graphql-codegen/typescript": "^1.22.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-config": "^5.0.2",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/react": "^17.0.0"
   },
   "scripts": {
     "build": "react-scripts build",
@@ -45,23 +44,5 @@
     "server:start": "firebase emulators:start",
     "start": "react-scripts start",
     "test": "react-scripts test"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
