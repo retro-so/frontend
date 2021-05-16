@@ -18,6 +18,10 @@ import { CardsModule } from 'src/cards'
     PostgresModule,
     AuthModule,
     GraphQLModule.forRoot({
+      cors: {
+        origin: 'http://localhost:3000',
+        credentials: true,
+      },
       autoSchemaFile: join(process.cwd(), 'src/compiled/schema.gql'),
       useGlobalPrefix: true,
     }),
