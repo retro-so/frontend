@@ -108,6 +108,20 @@ export type MeQuery = (
   ) }
 );
 
+export type CardCommonFieldsFragment = (
+  { __typename?: 'Card' }
+  & Pick<Card, 'id' | 'content'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'displayName'>
+  ) }
+);
+
+export type ListCommonFieldsFragment = (
+  { __typename?: 'List' }
+  & Pick<List, 'id' | 'name' | 'index'>
+);
+
 export type FetchBoardQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -120,15 +134,11 @@ export type FetchBoardQuery = (
     & Pick<Board, 'id' | 'name'>
     & { lists: Array<(
       { __typename?: 'List' }
-      & Pick<List, 'id' | 'name' | 'index'>
       & { cards: Array<(
         { __typename?: 'Card' }
-        & Pick<Card, 'id' | 'content'>
-        & { author: (
-          { __typename?: 'User' }
-          & Pick<User, 'displayName'>
-        ) }
+        & CardCommonFieldsFragment
       )> }
+      & ListCommonFieldsFragment
     )> }
   ) }
 );
@@ -142,7 +152,7 @@ export type CreateListMutation = (
   { __typename?: 'Mutation' }
   & { createList: (
     { __typename?: 'List' }
-    & Pick<List, 'id' | 'name' | 'index'>
+    & ListCommonFieldsFragment
   ) }
 );
 
@@ -155,12 +165,13 @@ export type CreateCardMutation = (
   { __typename?: 'Mutation' }
   & { createCard: (
     { __typename?: 'Card' }
-    & Pick<Card, 'id' | 'content'>
-    & { author: (
-      { __typename?: 'User' }
-      & Pick<User, 'displayName'>
-    ) }
+    & CardCommonFieldsFragment
   ) }
+);
+
+export type BoardCommonFieldsFragment = (
+  { __typename?: 'Board' }
+  & Pick<Board, 'id' | 'name'>
 );
 
 export type FetchBoardsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -170,7 +181,7 @@ export type FetchBoardsQuery = (
   { __typename?: 'Query' }
   & { boards: Array<(
     { __typename?: 'Board' }
-    & Pick<Board, 'id' | 'name'>
+    & BoardCommonFieldsFragment
   )> }
 );
 
@@ -183,11 +194,32 @@ export type CreateBoardMutation = (
   { __typename?: 'Mutation' }
   & { createBoard: (
     { __typename?: 'Board' }
-    & Pick<Board, 'id' | 'name'>
+    & BoardCommonFieldsFragment
   ) }
 );
 
-
+export const CardCommonFieldsFragmentDoc = gql`
+    fragment CardCommonFields on Card {
+  id
+  content
+  author {
+    displayName
+  }
+}
+    `;
+export const ListCommonFieldsFragmentDoc = gql`
+    fragment ListCommonFields on List {
+  id
+  name
+  index
+}
+    `;
+export const BoardCommonFieldsFragmentDoc = gql`
+    fragment BoardCommonFields on Board {
+  id
+  name
+}
+    `;
 export const MeDocument = gql`
     query Me {
   me {
@@ -229,20 +261,15 @@ export const FetchBoardDocument = gql`
     id
     name
     lists {
-      id
-      name
-      index
+      ...ListCommonFields
       cards {
-        id
-        content
-        author {
-          displayName
-        }
+        ...CardCommonFields
       }
     }
   }
 }
-    `;
+    ${ListCommonFieldsFragmentDoc}
+${CardCommonFieldsFragmentDoc}`;
 
 /**
  * __useFetchBoardQuery__
@@ -274,12 +301,10 @@ export type FetchBoardQueryResult = Apollo.QueryResult<FetchBoardQuery, FetchBoa
 export const CreateListDocument = gql`
     mutation CreateList($list: CreateListInput!) {
   createList(list: $list) {
-    id
-    name
-    index
+    ...ListCommonFields
   }
 }
-    `;
+    ${ListCommonFieldsFragmentDoc}`;
 export type CreateListMutationFn = Apollo.MutationFunction<CreateListMutation, CreateListMutationVariables>;
 
 /**
@@ -309,14 +334,10 @@ export type CreateListMutationOptions = Apollo.BaseMutationOptions<CreateListMut
 export const CreateCardDocument = gql`
     mutation CreateCard($card: CreateCardInput!) {
   createCard(card: $card) {
-    id
-    content
-    author {
-      displayName
-    }
+    ...CardCommonFields
   }
 }
-    `;
+    ${CardCommonFieldsFragmentDoc}`;
 export type CreateCardMutationFn = Apollo.MutationFunction<CreateCardMutation, CreateCardMutationVariables>;
 
 /**
@@ -346,11 +367,10 @@ export type CreateCardMutationOptions = Apollo.BaseMutationOptions<CreateCardMut
 export const FetchBoardsDocument = gql`
     query FetchBoards {
   boards {
-    id
-    name
+    ...BoardCommonFields
   }
 }
-    `;
+    ${BoardCommonFieldsFragmentDoc}`;
 
 /**
  * __useFetchBoardsQuery__
@@ -381,11 +401,10 @@ export type FetchBoardsQueryResult = Apollo.QueryResult<FetchBoardsQuery, FetchB
 export const CreateBoardDocument = gql`
     mutation CreateBoard($board: CreateBoardInput!) {
   createBoard(board: $board) {
-    id
-    name
+    ...BoardCommonFields
   }
 }
-    `;
+    ${BoardCommonFieldsFragmentDoc}`;
 export type CreateBoardMutationFn = Apollo.MutationFunction<CreateBoardMutation, CreateBoardMutationVariables>;
 
 /**

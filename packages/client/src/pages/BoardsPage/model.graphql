@@ -1,13 +1,16 @@
+fragment BoardCommonFields on Board {
+  id
+  name
+}
+
 query FetchBoards {
   boards {
-    id
-    name
+    ...BoardCommonFields
   }
 }
 
 mutation CreateBoard($board: CreateBoardInput!) {
   createBoard(board: $board) {
-    id
-    name
+    ...BoardCommonFields
   }
 }

@@ -1,17 +1,25 @@
+fragment CardCommonFields on Card {
+  id
+  content
+  author {
+    displayName
+  }
+}
+
+fragment ListCommonFields on List {
+  id
+  name
+  index
+}
+
 query FetchBoard($id: ID!) {
   board(id: $id) {
     id
     name
     lists {
-      id
-      name
-      index
+      ...ListCommonFields
       cards {
-        id
-        content
-        author {
-          displayName
-        }
+        ...CardCommonFields
       }
     }
   }
@@ -19,20 +27,12 @@ query FetchBoard($id: ID!) {
 
 mutation CreateList($list: CreateListInput!) {
   createList(list: $list) {
-    # TODO: Use list fragment.
-    id
-    name
-    index
+    ...ListCommonFields
   }
 }
 
 mutation CreateCard($card: CreateCardInput!) {
   createCard(card: $card) {
-    # TODO: Use card fragment.
-    id
-    content
-    author {
-      displayName
-    }
+    ...CardCommonFields
   }
 }
