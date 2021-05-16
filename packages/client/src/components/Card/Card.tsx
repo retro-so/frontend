@@ -1,12 +1,11 @@
 import { FC, useState } from 'react'
 import styled from '@emotion/styled'
 
-import type { Card as TCard } from '../../api/types'
 import { EditableCardContent } from './EditableCardContent'
 import { StaticCardContent } from './StaticCardContent'
 import { DropdownMenu } from './DropdownMenu'
 
-type CardProps = TCard & {
+type CardProps = any & {
   // FIXME: Use this value from context?
   columnId: string
   cardDelete: (params: any) => void

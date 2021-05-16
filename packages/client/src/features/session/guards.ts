@@ -1,28 +1,31 @@
-import { Unit, guard } from 'effector'
+import { useEffect } from 'react'
+import { useApolloClient } from '@apollo/client'
 
-import { pushHistoryFx } from '../../libs/history'
+import { MeDocument } from '../../api/graphql'
+import { history } from '../../libs/history'
 import { paths } from '../../pages/paths'
-import { $session } from './model';
 
-const $isAuthenticated = $session.map((is) => is !== null)
-const $isNotAuthenticated = $session.map((is) => is === null)
+/**
+ * Checks profile data and if not exists redirect to login page.
+ */
+export function useAuthGuard() {
+  const client = useApolloClient()
+  const data = client.readQuery({ query: MeDocument })
 
-export function checkIsAuthenticated<T>({ when }: { when: Unit<T> }) {
-  guard({
-    source: when,
-    // @ts-expect-error
-    filter: $isNotAuthenticated,
-    // @ts-expect-error
-    target: pushHistoryFx.prepend(paths.login),
-  })
+  useEffect(() => {
+    if (!data) {
+      history.push(paths.login())
+    }
+  }, [data])
 }
 
-export function checkIsNotAuthenticated<T>({ when }: { when: Unit<T> }) {
-  guard({
-    source: when,
-    // @ts-expect-error
-    filter: $isAuthenticated,
-    // @ts-expect-error
-    target: pushHistoryFx.prepend(paths.board),
-  })
+export function useAnonymousGuard() {
+  const client = useApolloClient()
+  const data = client.readQuery({ query: MeDocument })
+
+  useEffect(() => {
+    if (data) {
+      history.push(paths.boards())
+    }
+  }, [data])
 }

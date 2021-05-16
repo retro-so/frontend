@@ -2,11 +2,9 @@ import { FC } from 'react'
 import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 
-import type { Author } from '../../api/types'
-
 type StaticCardContentProps = {
   content: string
-  author: Author
+  author: any
 }
 
 export const StaticCardContent: FC<StaticCardContentProps> = (props) => {
@@ -18,7 +16,7 @@ export const StaticCardContent: FC<StaticCardContentProps> = (props) => {
         {content}
       </Text>
       <Text typography="caption-l" color="link">
-        {author.uid}
+        {author.displayName}
       </Text>
     </Container>
   )

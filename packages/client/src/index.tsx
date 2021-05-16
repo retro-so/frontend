@@ -6,21 +6,24 @@ import { Pages } from './pages'
 import { GlobalStyles } from './GlobalStyles'
 import reportWebVitals from './reportWebVitals'
 import { history } from './libs/history'
-import { readyToLoadSession } from './features/session'
+import { loadSession } from './features/session'
 import { LegoThemeProvider } from './components/LegoThemeProvider'
 import { PageLoading } from './components/PageLoading'
+import { ApolloProvider } from './libs/apollo'
 
-readyToLoadSession().then(() => {
+loadSession().then(() => {
   render(
     <>
       <GlobalStyles />
-      <LegoThemeProvider>
-        <Router history={history}>
-          <Suspense fallback={<PageLoading />}>
-            <Pages />
-          </Suspense>
-        </Router>
-      </LegoThemeProvider>
+      <ApolloProvider>
+        <LegoThemeProvider>
+          <Router history={history}>
+            <Suspense fallback={<PageLoading />}>
+              <Pages />
+            </Suspense>
+          </Router>
+        </LegoThemeProvider>
+      </ApolloProvider>
     </>,
     document.getElementById('root'),
   )

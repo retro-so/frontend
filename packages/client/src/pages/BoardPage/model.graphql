@@ -1,0 +1,38 @@
+query FetchBoard($id: ID!) {
+  board(id: $id) {
+    id
+    name
+    lists {
+      id
+      name
+      index
+      cards {
+        id
+        content
+        author {
+          displayName
+        }
+      }
+    }
+  }
+}
+
+mutation CreateList($list: CreateListInput!) {
+  createList(list: $list) {
+    # TODO: Use list fragment.
+    id
+    name
+    index
+  }
+}
+
+mutation CreateCard($card: CreateCardInput!) {
+  createCard(card: $card) {
+    # TODO: Use card fragment.
+    id
+    content
+    author {
+      displayName
+    }
+  }
+}

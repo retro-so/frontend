@@ -1,13 +1,12 @@
 import { FC } from 'react'
-import { useGate } from 'effector-react'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Text } from '@yandex/ui/Text/bundle'
 
 import { Flex } from '../../components/Flex'
-import { LoginGate, login } from './model'
+import { useAnonymousGuard } from '../../features/session'
 
 export const LoginPage: FC = () => {
-  useGate(LoginGate)
+  useAnonymousGuard()
 
   return (
     <Flex direction="column" justifyContent="center" alignItems="center" gap="32px" height="100vh">
@@ -18,10 +17,10 @@ export const LoginPage: FC = () => {
         Login via
       </Text>
       <Flex gap="16px">
-        <Button view="default" size="m" onClick={() => login('google')}>
-          Google
+        <Button view="action" size="m" type="link" url="http://localhost:3100/api/v1/auth/yandex">
+          Yandex
         </Button>
-        <Button view="pseudo" size="m" onClick={() => login('anonymous')}>
+        <Button disabled view="pseudo" size="m" onClick={() => null}>
           Anonymous
         </Button>
       </Flex>

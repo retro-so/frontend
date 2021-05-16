@@ -3,20 +3,18 @@ import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 
-import type { Column as TColumn } from '../api/types'
 import { Card, EditableCard } from './Card'
 import { PlusIcon } from './Icons/PlusIcon'
-import { EditableCardContent } from './Card/EditableCardContent'
 
-type ColumnProps = TColumn & {
+type ColumnProps = any & {
   // FIXME: Fix types for events.
-  cardCreate: (params: any) => void
+  createCard: (params: any) => void
   cardDelete: (params: any) => void
   cardUpdate: (params: any) => void
 }
 
 export const Column: FC<ColumnProps> = (props) => {
-  const { id, name, cards, cardCreate, cardDelete, cardUpdate } = props
+  const { id, name, cards, createCard, cardDelete, cardUpdate } = props
 
   const cardsRef = useRef<HTMLDivElement>(null)
   const [isCreatorMode, setCreatorMode] = useState(false)
@@ -28,7 +26,7 @@ export const Column: FC<ColumnProps> = (props) => {
   }, [isCreatorMode])
 
   const onAction = (content: string) => {
-    cardCreate({ columnId: id, content })
+    createCard({ variables: { card: { list: id, content } } })
     setCreatorMode(false)
   }
 
@@ -42,7 +40,7 @@ export const Column: FC<ColumnProps> = (props) => {
         </Header>
         <Cards ref={cardsRef}>
           {/* FIXME: Remove optional operator. */}
-          {Object.entries(cards ?? {}).map(([_, card]) => (
+          {cards.map((card: any) => (
             <Card
               {...card}
               key={card.id}

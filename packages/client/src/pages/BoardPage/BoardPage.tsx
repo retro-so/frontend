@@ -1,33 +1,32 @@
 import { FC, useState } from 'react'
-import { useGate, useStore } from 'effector-react'
 import { useParams } from 'react-router'
 import styled from '@emotion/styled'
 
 import { Column } from '../../components/Column'
+import { useCreateCardMutation, useCreateListMutation, useFetchBoardQuery } from '../../api/graphql'
 import { BoardRouteParams } from '../paths'
-import { $board, BoardGate, cardCreate, cardDelete, columnCreate, cardUpdate } from './model'
 
 export const BoardPage: FC = () => {
   const params = useParams<BoardRouteParams>()
-  useGate(BoardGate, { id: params.id })
-  const board = useStore($board)
-
+  const { data, loading } = useFetchBoardQuery({ variables: { id: params.id }, pollInterval: 5000 })
+  const [createList] = useCreateListMutation()
+  const [createCard] = useCreateCardMutation()
   const [columnName, setColumnName] = useState('')
 
-  if (!board) {
+  if (loading) {
     return <div>Loading...</div>
   }
 
   return (
     <Container>
-      <div>{board.boardName}</div>
+      <div>{data?.board.name}</div>
       <hr />
       <div>Users: ...</div>
       <hr />
       <div>
         <button
           onClick={() => {
-            columnCreate({ name: columnName })
+            createList({ variables: { list: { name: columnName, board: params.id } } })
             setColumnName('')
           }}
         >
@@ -38,13 +37,13 @@ export const BoardPage: FC = () => {
       <hr />
       <Canvas>
         <Columns>
-          {Object.entries(board.columns).map(([_, column]) => (
+          {data?.board.lists.map((list) => (
             <Column
-              {...column}
-              key={column.id}
-              cardCreate={cardCreate}
-              cardDelete={cardDelete}
-              cardUpdate={cardUpdate}
+              {...list}
+              key={list.id}
+              createCard={createCard}
+              // cardDelete={cardDelete}
+              // cardUpdate={cardUpdate}
             />
           ))}
         </Columns>

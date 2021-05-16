@@ -1,0 +1,13 @@
+query FetchBoards {
+  boards {
+    id
+    name
+  }
+}
+
+mutation CreateBoard($board: CreateBoardInput!) {
+  createBoard(board: $board) {
+    id
+    name
+  }
+}

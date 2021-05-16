@@ -1,21 +1,55 @@
 import { FC, useState } from 'react'
-import { useGate, useList } from 'effector-react'
 import { Link } from 'react-router-dom'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
 
+import {
+  FetchBoardsQuery,
+  FetchBoardsDocument,
+  useFetchBoardsQuery,
+  useCreateBoardMutation,
+} from '../../api/graphql'
+import { useAuthGuard } from '../../features/session'
 import { paths } from '../paths'
-import { $boards, boardCreate, BoardsGate } from './model'
 
 export const BoardsPage: FC = () => {
-  useGate(BoardsGate)
+  useAuthGuard()
+  const { data, loading } = useFetchBoardsQuery()
+
+  const [createBoard] = useCreateBoardMutation({
+    update: (cache, result) => {
+      const data = cache.readQuery<FetchBoardsQuery>({ query: FetchBoardsDocument })
+
+      if (data?.boards && result.data) {
+        const nextBoards = data.boards.concat(result.data?.createBoard)
+
+        cache.writeQuery<FetchBoardsQuery>({
+          query: FetchBoardsDocument,
+          data: { boards: nextBoards },
+        })
+      }
+    },
+  })
 
   const [value, setValue] = useState('')
 
+  if (loading) {
+    return <>Loading...</>
+  }
+
   const onClick = () => {
     if (value) {
-      boardCreate(value)
+      createBoard({
+        variables: { board: { name: value } },
+        optimisticResponse: {
+          createBoard: {
+            id: '-1',
+            __typename: 'Board',
+            name: value,
+          },
+        },
+      })
       setValue('')
     }
   }
@@ -24,8 +58,8 @@ export const BoardsPage: FC = () => {
     <div>
       <Text typography="headline-m">All boards</Text>
       <div>
-        {useList($boards, (board) => (
-          <div>
+        {data?.boards.map((board) => (
+          <div key={board.id}>
             <Link to={paths.board(board.id)}>{board.name}</Link>
           </div>
         ))}

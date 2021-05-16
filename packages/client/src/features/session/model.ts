@@ -1,19 +1,12 @@
-import { createStore, createEvent } from 'effector'
+import { MeDocument, MeQuery } from '../../api/graphql'
+import { client } from '../../libs/apollo'
 
-import { auth } from '../../libs/firebase/auth'
-import type { MaybeSession } from './types'
+export async function loadSession() {
+  try {
+    const result = await client.query<MeQuery>({ query: MeDocument })
 
-export function readyToLoadSession() {
-  return new Promise<void>((resolve) => {
-    auth.onAuthStateChanged((session) => {
-      sessionChange(session)
-      resolve()
-    })
-  })
+    if (result.data.me) {
+      return Promise.resolve()
+    }
+  } catch (_error) {}
 }
-
-export const $session = createStore<MaybeSession>(null)
-
-const sessionChange = createEvent<MaybeSession>()
-
-$session.on(sessionChange, (_, payload) => payload)
