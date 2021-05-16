@@ -32,7 +32,7 @@ export class AuthController {
         httpOnly: true,
         path: '/api/v1/auth/refresh',
       })
-      .json(user)
+      .redirect('http://localhost:3000/boards')
   }
 
   @Get('logout')
