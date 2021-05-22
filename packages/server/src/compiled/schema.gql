@@ -16,6 +16,7 @@ type Card {
   index: Float!
   content: String!
   author: User!
+  solved: Boolean!
 }
 
 type List {
@@ -43,6 +44,8 @@ type Mutation {
   createBoard(board: CreateBoardInput!): Board!
   createList(list: CreateListInput!): List!
   createCard(card: CreateCardInput!): Card!
+  updateCard(card: UpdateCardInput!): Card!
+  removeCard(id: ID!): String!
 }
 
 input CreateBoardInput {
@@ -57,4 +60,10 @@ input CreateListInput {
 input CreateCardInput {
   content: String!
   list: ID!
+}
+
+input UpdateCardInput {
+  id: ID!
+  content: String
+  solved: Boolean
 }

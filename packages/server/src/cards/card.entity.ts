@@ -27,4 +27,8 @@ export class CardEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'author_id' })
   author: UserEntity
+
+  @Field()
+  @Column({ default: false })
+  solved: boolean
 }
