@@ -7,10 +7,12 @@ import { List as ListType, useCreateCardMutation } from '../api/graphql'
 import { Card, EditableCard } from './Card'
 import { PlusIcon } from './Icons/PlusIcon'
 
-type ColumnProps = ListType
+type ColumnProps = ListType & {
+  boardId: string
+}
 
 export const Column: FC<ColumnProps> = (props) => {
-  const { id, name, cards } = props
+  const { id, name, cards, boardId } = props
 
   const cardsRef = useRef<HTMLDivElement>(null)
   const [isCreatorMode, setCreatorMode] = useState(false)
@@ -23,7 +25,7 @@ export const Column: FC<ColumnProps> = (props) => {
   }, [isCreatorMode])
 
   const onAction = (content: string) => {
-    createCard({ variables: { card: { list: id, content } } })
+    createCard({ variables: { card: { listId: id, boardId, content } } })
     setCreatorMode(false)
   }
 

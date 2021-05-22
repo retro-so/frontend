@@ -1,16 +1,44 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import styled from '@emotion/styled'
 
 import { Column } from '../../components/Column'
-import { useCreateListMutation, useFetchBoardQuery } from '../../api/graphql'
+import {
+  CardCreatedDocument,
+  CardCreatedSubscription,
+  CardCreatedSubscriptionVariables,
+  useCreateListMutation,
+  useFetchBoardQuery,
+} from '../../api/graphql'
 import { BoardRouteParams } from '../paths'
 
 export const BoardPage: FC = () => {
-  const params = useParams<BoardRouteParams>()
-  const { data, loading } = useFetchBoardQuery({ variables: { id: params.id }, pollInterval: 5000 })
+  const { id } = useParams<BoardRouteParams>()
+  const { subscribeToMore, data, loading, error } = useFetchBoardQuery({ variables: { id } })
   const [createList] = useCreateListMutation()
   const [columnName, setColumnName] = useState('')
+
+  useEffect(() => {
+    subscribeToMore<CardCreatedSubscription, CardCreatedSubscriptionVariables>({
+      document: CardCreatedDocument,
+      variables: { boardId: id },
+      updateQuery: (prev, { subscriptionData }) => ({
+        board: {
+          ...prev.board,
+          lists: prev.board.lists.map((list) => {
+            if (list.id === subscriptionData.data.cardCreated.listId) {
+              return { ...list, cards: [...list.cards, subscriptionData.data.cardCreated] }
+            }
+            return list
+          }),
+        },
+      }),
+    })
+  }, [subscribeToMore, id])
+
+  if (error) {
+    throw new Error(error as any)
+  }
 
   if (loading) {
     return <div>Loading...</div>
@@ -25,7 +53,7 @@ export const BoardPage: FC = () => {
       <div>
         <button
           onClick={() => {
-            createList({ variables: { list: { name: columnName, board: params.id } } })
+            createList({ variables: { list: { name: columnName, boardId: id } } })
             setColumnName('')
           }}
         >
@@ -38,7 +66,7 @@ export const BoardPage: FC = () => {
         <Columns>
           {data?.board.lists.map((list) => (
             // @ts-expect-error
-            <Column {...list} key={list.id} />
+            <Column {...list} boardId={id} key={list.id} />
           ))}
         </Columns>
       </Canvas>

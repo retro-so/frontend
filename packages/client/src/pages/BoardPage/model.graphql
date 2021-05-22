@@ -47,3 +47,10 @@ mutation UpdateCard($card: UpdateCardInput!) {
 mutation RemoveCard($id: ID!) {
   removeCard(id: $id)
 }
+
+subscription CardCreated($boardId: ID!) {
+  cardCreated(boardId: $boardId) {
+    listId
+    ...CardCommonFields
+  }
+}
