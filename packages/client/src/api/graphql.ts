@@ -29,6 +29,7 @@ export type Card = {
   index: Scalars['Float'];
   content: Scalars['String'];
   author: User;
+  solved: Scalars['Boolean'];
 };
 
 export type CreateBoardInput = {
@@ -58,6 +59,8 @@ export type Mutation = {
   createBoard: Board;
   createList: List;
   createCard: Card;
+  updateCard: Card;
+  removeCard: Scalars['String'];
 };
 
 
@@ -75,6 +78,16 @@ export type MutationCreateCardArgs = {
   card: CreateCardInput;
 };
 
+
+export type MutationUpdateCardArgs = {
+  card: UpdateCardInput;
+};
+
+
+export type MutationRemoveCardArgs = {
+  id: Scalars['ID'];
+};
+
 export type Query = {
   __typename?: 'Query';
   me: User;
@@ -85,6 +98,12 @@ export type Query = {
 
 export type QueryBoardArgs = {
   id: Scalars['ID'];
+};
+
+export type UpdateCardInput = {
+  id: Scalars['ID'];
+  content?: Maybe<Scalars['String']>;
+  solved?: Maybe<Scalars['Boolean']>;
 };
 
 export type User = {
@@ -110,7 +129,7 @@ export type MeQuery = (
 
 export type CardCommonFieldsFragment = (
   { __typename?: 'Card' }
-  & Pick<Card, 'id' | 'content'>
+  & Pick<Card, 'id' | 'content' | 'solved'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'displayName'>
@@ -169,6 +188,29 @@ export type CreateCardMutation = (
   ) }
 );
 
+export type UpdateCardMutationVariables = Exact<{
+  card: UpdateCardInput;
+}>;
+
+
+export type UpdateCardMutation = (
+  { __typename?: 'Mutation' }
+  & { updateCard: (
+    { __typename?: 'Card' }
+    & Pick<Card, 'content'>
+  ) }
+);
+
+export type RemoveCardMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveCardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeCard'>
+);
+
 export type BoardCommonFieldsFragment = (
   { __typename?: 'Board' }
   & Pick<Board, 'id' | 'name'>
@@ -202,6 +244,7 @@ export const CardCommonFieldsFragmentDoc = gql`
     fragment CardCommonFields on Card {
   id
   content
+  solved
   author {
     displayName
   }
@@ -364,6 +407,70 @@ export function useCreateCardMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateCardMutationHookResult = ReturnType<typeof useCreateCardMutation>;
 export type CreateCardMutationResult = Apollo.MutationResult<CreateCardMutation>;
 export type CreateCardMutationOptions = Apollo.BaseMutationOptions<CreateCardMutation, CreateCardMutationVariables>;
+export const UpdateCardDocument = gql`
+    mutation UpdateCard($card: UpdateCardInput!) {
+  updateCard(card: $card) {
+    content
+  }
+}
+    `;
+export type UpdateCardMutationFn = Apollo.MutationFunction<UpdateCardMutation, UpdateCardMutationVariables>;
+
+/**
+ * __useUpdateCardMutation__
+ *
+ * To run a mutation, you first call `useUpdateCardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCardMutation, { data, loading, error }] = useUpdateCardMutation({
+ *   variables: {
+ *      card: // value for 'card'
+ *   },
+ * });
+ */
+export function useUpdateCardMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCardMutation, UpdateCardMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCardMutation, UpdateCardMutationVariables>(UpdateCardDocument, options);
+      }
+export type UpdateCardMutationHookResult = ReturnType<typeof useUpdateCardMutation>;
+export type UpdateCardMutationResult = Apollo.MutationResult<UpdateCardMutation>;
+export type UpdateCardMutationOptions = Apollo.BaseMutationOptions<UpdateCardMutation, UpdateCardMutationVariables>;
+export const RemoveCardDocument = gql`
+    mutation RemoveCard($id: ID!) {
+  removeCard(id: $id)
+}
+    `;
+export type RemoveCardMutationFn = Apollo.MutationFunction<RemoveCardMutation, RemoveCardMutationVariables>;
+
+/**
+ * __useRemoveCardMutation__
+ *
+ * To run a mutation, you first call `useRemoveCardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCardMutation, { data, loading, error }] = useRemoveCardMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveCardMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCardMutation, RemoveCardMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCardMutation, RemoveCardMutationVariables>(RemoveCardDocument, options);
+      }
+export type RemoveCardMutationHookResult = ReturnType<typeof useRemoveCardMutation>;
+export type RemoveCardMutationResult = Apollo.MutationResult<RemoveCardMutation>;
+export type RemoveCardMutationOptions = Apollo.BaseMutationOptions<RemoveCardMutation, RemoveCardMutationVariables>;
 export const FetchBoardsDocument = gql`
     query FetchBoards {
   boards {

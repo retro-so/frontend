@@ -2,10 +2,9 @@ import { FC } from 'react'
 import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 
-type StaticCardContentProps = {
-  content: string
-  author: any
-}
+import { Card as CardType } from '../../api/graphql'
+
+type StaticCardContentProps = Pick<CardType, 'author' | 'content'>
 
 export const StaticCardContent: FC<StaticCardContentProps> = (props) => {
   const { content, author } = props

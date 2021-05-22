@@ -3,14 +3,13 @@ import { useParams } from 'react-router'
 import styled from '@emotion/styled'
 
 import { Column } from '../../components/Column'
-import { useCreateCardMutation, useCreateListMutation, useFetchBoardQuery } from '../../api/graphql'
+import { useCreateListMutation, useFetchBoardQuery } from '../../api/graphql'
 import { BoardRouteParams } from '../paths'
 
 export const BoardPage: FC = () => {
   const params = useParams<BoardRouteParams>()
   const { data, loading } = useFetchBoardQuery({ variables: { id: params.id }, pollInterval: 5000 })
   const [createList] = useCreateListMutation()
-  const [createCard] = useCreateCardMutation()
   const [columnName, setColumnName] = useState('')
 
   if (loading) {
@@ -38,13 +37,8 @@ export const BoardPage: FC = () => {
       <Canvas>
         <Columns>
           {data?.board.lists.map((list) => (
-            <Column
-              {...list}
-              key={list.id}
-              createCard={createCard}
-              // cardDelete={cardDelete}
-              // cardUpdate={cardUpdate}
-            />
+            // @ts-expect-error
+            <Column {...list} key={list.id} />
           ))}
         </Columns>
       </Canvas>

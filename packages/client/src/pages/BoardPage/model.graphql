@@ -1,6 +1,7 @@
 fragment CardCommonFields on Card {
   id
   content
+  solved
   author {
     displayName
   }
@@ -35,4 +36,14 @@ mutation CreateCard($card: CreateCardInput!) {
   createCard(card: $card) {
     ...CardCommonFields
   }
+}
+
+mutation UpdateCard($card: UpdateCardInput!) {
+  updateCard(card: $card) {
+    content
+  }
+}
+
+mutation RemoveCard($id: ID!) {
+  removeCard(id: $id)
 }

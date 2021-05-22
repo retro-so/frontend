@@ -4,21 +4,20 @@ import styled from '@emotion/styled'
 import { EditableCardContent } from './EditableCardContent'
 import { StaticCardContent } from './StaticCardContent'
 import { DropdownMenu } from './DropdownMenu'
+import { Card as CardType, useRemoveCardMutation, useUpdateCardMutation } from '../../api/graphql'
 
-type CardProps = any & {
-  // FIXME: Use this value from context?
-  columnId: string
-  cardDelete: (params: any) => void
-  cardUpdate: (params: any) => void
-}
+type CardProps = CardType
 
 export const Card: FC<CardProps> = (props) => {
-  const { id, content, author, solved, columnId, cardDelete, cardUpdate } = props
+  const { id, content, author, solved } = props
   const [isEditMode, setEditMode] = useState(false)
+
+  const [updateCard] = useUpdateCardMutation()
+  const [removeCard] = useRemoveCardMutation()
 
   const onDeleteAction = () => {
     if (window.confirm('Delete this card?')) {
-      cardDelete({ columnId, cardId: id })
+      removeCard({ variables: { id } })
     }
   }
 
@@ -27,11 +26,11 @@ export const Card: FC<CardProps> = (props) => {
   }
 
   const onSolveAction = () => {
-    cardUpdate({ columnId, cardId: id, solved: !solved })
+    updateCard({ variables: { card: { id, solved: !solved } } })
   }
 
   const onUpdateCard = (content: string) => {
-    cardUpdate({ columnId, cardId: id, content })
+    updateCard({ variables: { card: { id, content } } })
     setEditMode(false)
   }
 

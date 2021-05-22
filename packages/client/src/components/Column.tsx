@@ -3,21 +3,18 @@ import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 
+import { List as ListType, useCreateCardMutation } from '../api/graphql'
 import { Card, EditableCard } from './Card'
 import { PlusIcon } from './Icons/PlusIcon'
 
-type ColumnProps = any & {
-  // FIXME: Fix types for events.
-  createCard: (params: any) => void
-  cardDelete: (params: any) => void
-  cardUpdate: (params: any) => void
-}
+type ColumnProps = ListType
 
 export const Column: FC<ColumnProps> = (props) => {
-  const { id, name, cards, createCard, cardDelete, cardUpdate } = props
+  const { id, name, cards } = props
 
   const cardsRef = useRef<HTMLDivElement>(null)
   const [isCreatorMode, setCreatorMode] = useState(false)
+  const [createCard] = useCreateCardMutation()
 
   useEffect(() => {
     if (isCreatorMode) {
@@ -41,13 +38,7 @@ export const Column: FC<ColumnProps> = (props) => {
         <Cards ref={cardsRef}>
           {/* FIXME: Remove optional operator. */}
           {cards.map((card: any) => (
-            <Card
-              {...card}
-              key={card.id}
-              columnId={id}
-              cardDelete={cardDelete}
-              cardUpdate={cardUpdate}
-            />
+            <Card {...card} key={card.id} />
           ))}
           {isCreatorMode && (
             <EditableCard onAction={onAction} onCancel={() => setCreatorMode(false)} />
