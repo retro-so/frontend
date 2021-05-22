@@ -17,13 +17,13 @@ export class ListEntity {
 
   @ManyToOne(() => BoardEntity)
   @JoinColumn({ name: 'board_id' })
-  board: string
+  boardId: string
 
   @Field()
   @Column()
   name: string
 
   @Field(() => [CardEntity])
-  @OneToMany(() => CardEntity, (card) => card.list)
+  @OneToMany(() => CardEntity, (card) => card.listId)
   cards: CardEntity[]
 }

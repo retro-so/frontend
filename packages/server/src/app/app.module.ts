@@ -22,8 +22,22 @@ import { CardsModule } from 'src/cards'
         origin: 'http://localhost:3000',
         credentials: true,
       },
+      subscriptions: {
+        path: '/api/v1/subscriptions',
+        // Passes request from handshake to context.
+        onConnect: (_params, _ws, ctx) => ({ req: ctx.request }),
+      },
+      context: ({ req, connection }) => {
+        // Extracts request from ws connection.
+        if (connection) {
+          return { req: connection.context.req }
+        }
+        return { req }
+      },
       autoSchemaFile: join(process.cwd(), 'src/compiled/schema.gql'),
+      installSubscriptionHandlers: true,
       useGlobalPrefix: true,
+      playground: true,
     }),
     BoardsModule,
     ListsModule,

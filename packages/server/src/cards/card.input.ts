@@ -8,7 +8,10 @@ export class CreateCardInput implements Partial<CardEntity> {
   content: string
 
   @Field(() => ID)
-  list: string
+  listId: string
+
+  @Field(() => ID)
+  boardId: string
 }
 
 @InputType()

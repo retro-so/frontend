@@ -3,6 +3,7 @@ import { Field, ObjectType, ID } from '@nestjs/graphql'
 
 import { UserEntity } from 'src/users'
 import { ListEntity } from 'src/lists'
+import { BoardEntity } from 'src/boards'
 
 @ObjectType('Card')
 @Entity('card')
@@ -15,9 +16,15 @@ export class CardEntity {
   @Column({ default: 0 })
   index: number
 
+  @Field()
   @ManyToOne(() => ListEntity)
   @JoinColumn({ name: 'list_id' })
-  list: string
+  listId: string
+
+  @Field()
+  @ManyToOne(() => BoardEntity)
+  @JoinColumn({ name: 'board_id' })
+  boardId: string
 
   @Field()
   @Column()
