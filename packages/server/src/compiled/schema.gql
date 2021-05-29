@@ -47,7 +47,7 @@ type Mutation {
   createList(list: CreateListInput!): List!
   createCard(card: CreateCardInput!): Card!
   updateCard(card: UpdateCardInput!): Card!
-  removeCard(id: ID!): String!
+  removeCard(id: ID!): Card!
 }
 
 input CreateBoardInput {
@@ -73,4 +73,6 @@ input UpdateCardInput {
 
 type Subscription {
   cardCreated(boardId: ID!): Card!
+  cardUpdated(boardId: ID!): Card!
+  cardRemoved(boardId: ID!): Card!
 }

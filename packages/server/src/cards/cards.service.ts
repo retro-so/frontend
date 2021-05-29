@@ -19,14 +19,22 @@ export class CardsService {
   }
 
   async updateCard(cardData: UpdateCardInput) {
-    const card = await this.cardRepo.preload(cardData)
+    const card = await this.cardRepo.findOne(
+      { id: cardData.id },
+      { loadRelationIds: { relations: ['boardId', 'listId'] }, relations: ['author'] },
+    )
+    const nextCard = Object.assign(card, cardData)
 
-    return this.cardRepo.save(card)
+    return this.cardRepo.save(nextCard)
   }
 
   async removeCard(cardId: string) {
-    await this.cardRepo.delete({ id: cardId })
+    const card = await this.cardRepo.findOne(
+      { id: cardId },
+      { loadRelationIds: { relations: ['boardId', 'listId'] } },
+    )
+    await this.cardRepo.delete(card)
 
-    return cardId
+    return card
   }
 }
