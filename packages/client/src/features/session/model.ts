@@ -1,4 +1,4 @@
-import { MeDocument, MeQuery } from '../../api/graphql'
+import { MeDocument, MeQuery, useMeQuery } from '../../api/graphql'
 import { client } from '../../libs/apollo'
 
 export async function loadSession() {
@@ -9,4 +9,10 @@ export async function loadSession() {
       return Promise.resolve()
     }
   } catch (_error) {}
+}
+
+export function useSessionUser() {
+  const { data } = useMeQuery()
+
+  return data!.me
 }
