@@ -1,40 +1,22 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useParams } from 'react-router'
+import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
 
+import { Header } from '../../components/Header'
 import { Column } from '../../components/Column'
-import {
-  CardCreatedDocument,
-  CardCreatedSubscription,
-  CardCreatedSubscriptionVariables,
-  useCreateListMutation,
-  useFetchBoardQuery,
-} from '../../api/graphql'
+import { useCreateListMutation } from '../../api/graphql'
+import { useAuthGuard } from '../../features/session'
 import { BoardRouteParams } from '../paths'
+import { useBoardPageModel } from './model'
 
 export const BoardPage: FC = () => {
+  useAuthGuard()
+
   const { id } = useParams<BoardRouteParams>()
-  const { subscribeToMore, data, loading, error } = useFetchBoardQuery({ variables: { id } })
+  const { error, data, loading } = useBoardPageModel(id)
   const [createList] = useCreateListMutation()
   const [columnName, setColumnName] = useState('')
-
-  useEffect(() => {
-    subscribeToMore<CardCreatedSubscription, CardCreatedSubscriptionVariables>({
-      document: CardCreatedDocument,
-      variables: { boardId: id },
-      updateQuery: (prev, { subscriptionData }) => ({
-        board: {
-          ...prev.board,
-          lists: prev.board.lists.map((list) => {
-            if (list.id === subscriptionData.data.cardCreated.listId) {
-              return { ...list, cards: [...list.cards, subscriptionData.data.cardCreated] }
-            }
-            return list
-          }),
-        },
-      }),
-    })
-  }, [subscribeToMore, id])
 
   if (error) {
     throw new Error(error as any)
@@ -46,7 +28,8 @@ export const BoardPage: FC = () => {
 
   return (
     <Container>
-      <div>{data?.board.name}</div>
+      <Header />
+      <Text typography="headline-m">{data?.board.name}</Text>
       <hr />
       <div>Users: ...</div>
       <hr />

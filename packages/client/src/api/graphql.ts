@@ -63,7 +63,7 @@ export type Mutation = {
   createList: List;
   createCard: Card;
   updateCard: Card;
-  removeCard: Scalars['String'];
+  removeCard: Card;
 };
 
 
@@ -106,10 +106,22 @@ export type QueryBoardArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   cardCreated: Card;
+  cardUpdated: Card;
+  cardRemoved: Card;
 };
 
 
 export type SubscriptionCardCreatedArgs = {
+  boardId: Scalars['ID'];
+};
+
+
+export type SubscriptionCardUpdatedArgs = {
+  boardId: Scalars['ID'];
+};
+
+
+export type SubscriptionCardRemovedArgs = {
   boardId: Scalars['ID'];
 };
 
@@ -221,7 +233,10 @@ export type RemoveCardMutationVariables = Exact<{
 
 export type RemoveCardMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'removeCard'>
+  & { removeCard: (
+    { __typename?: 'Card' }
+    & Pick<Card, 'id' | 'listId'>
+  ) }
 );
 
 export type CardCreatedSubscriptionVariables = Exact<{
@@ -235,6 +250,33 @@ export type CardCreatedSubscription = (
     { __typename?: 'Card' }
     & Pick<Card, 'listId'>
     & CardCommonFieldsFragment
+  ) }
+);
+
+export type CardUpdatedSubscriptionVariables = Exact<{
+  boardId: Scalars['ID'];
+}>;
+
+
+export type CardUpdatedSubscription = (
+  { __typename?: 'Subscription' }
+  & { cardUpdated: (
+    { __typename?: 'Card' }
+    & Pick<Card, 'listId'>
+    & CardCommonFieldsFragment
+  ) }
+);
+
+export type CardRemovedSubscriptionVariables = Exact<{
+  boardId: Scalars['ID'];
+}>;
+
+
+export type CardRemovedSubscription = (
+  { __typename?: 'Subscription' }
+  & { cardRemoved: (
+    { __typename?: 'Card' }
+    & Pick<Card, 'id' | 'listId'>
   ) }
 );
 
@@ -469,7 +511,10 @@ export type UpdateCardMutationResult = Apollo.MutationResult<UpdateCardMutation>
 export type UpdateCardMutationOptions = Apollo.BaseMutationOptions<UpdateCardMutation, UpdateCardMutationVariables>;
 export const RemoveCardDocument = gql`
     mutation RemoveCard($id: ID!) {
-  removeCard(id: $id)
+  removeCard(id: $id) {
+    id
+    listId
+  }
 }
     `;
 export type RemoveCardMutationFn = Apollo.MutationFunction<RemoveCardMutation, RemoveCardMutationVariables>;
@@ -529,6 +574,68 @@ export function useCardCreatedSubscription(baseOptions: Apollo.SubscriptionHookO
       }
 export type CardCreatedSubscriptionHookResult = ReturnType<typeof useCardCreatedSubscription>;
 export type CardCreatedSubscriptionResult = Apollo.SubscriptionResult<CardCreatedSubscription>;
+export const CardUpdatedDocument = gql`
+    subscription CardUpdated($boardId: ID!) {
+  cardUpdated(boardId: $boardId) {
+    listId
+    ...CardCommonFields
+  }
+}
+    ${CardCommonFieldsFragmentDoc}`;
+
+/**
+ * __useCardUpdatedSubscription__
+ *
+ * To run a query within a React component, call `useCardUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCardUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCardUpdatedSubscription({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useCardUpdatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<CardUpdatedSubscription, CardUpdatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<CardUpdatedSubscription, CardUpdatedSubscriptionVariables>(CardUpdatedDocument, options);
+      }
+export type CardUpdatedSubscriptionHookResult = ReturnType<typeof useCardUpdatedSubscription>;
+export type CardUpdatedSubscriptionResult = Apollo.SubscriptionResult<CardUpdatedSubscription>;
+export const CardRemovedDocument = gql`
+    subscription CardRemoved($boardId: ID!) {
+  cardRemoved(boardId: $boardId) {
+    id
+    listId
+  }
+}
+    `;
+
+/**
+ * __useCardRemovedSubscription__
+ *
+ * To run a query within a React component, call `useCardRemovedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCardRemovedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCardRemovedSubscription({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useCardRemovedSubscription(baseOptions: Apollo.SubscriptionHookOptions<CardRemovedSubscription, CardRemovedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<CardRemovedSubscription, CardRemovedSubscriptionVariables>(CardRemovedDocument, options);
+      }
+export type CardRemovedSubscriptionHookResult = ReturnType<typeof useCardRemovedSubscription>;
+export type CardRemovedSubscriptionResult = Apollo.SubscriptionResult<CardRemovedSubscription>;
 export const FetchBoardsDocument = gql`
     query FetchBoards {
   boards {
