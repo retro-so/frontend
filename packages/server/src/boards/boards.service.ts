@@ -22,7 +22,7 @@ export class BoardsService {
   findOneById(id: string) {
     return this.boardRepo.findOne(
       { id },
-      { relations: ['owner', 'lists', 'lists.cards', 'lists.cards.author'] },
+      { relations: ['owner', 'lists', 'lists.cards', 'lists.cards.author', 'lists.cards.likes'] },
     )
   }
 

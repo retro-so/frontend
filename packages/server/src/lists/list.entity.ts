@@ -17,6 +17,10 @@ export class ListEntity {
 
   @ManyToOne(() => BoardEntity)
   @JoinColumn({ name: 'board_id' })
+  board: BoardEntity
+
+  @ManyToOne(() => BoardEntity)
+  @Column({ name: 'board_id', type: 'uuid' })
   boardId: string
 
   @Field()
@@ -24,6 +28,6 @@ export class ListEntity {
   name: string
 
   @Field(() => [CardEntity])
-  @OneToMany(() => CardEntity, (card) => card.listId)
+  @OneToMany(() => CardEntity, (card) => card.list)
   cards: CardEntity[]
 }

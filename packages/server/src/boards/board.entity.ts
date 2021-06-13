@@ -29,7 +29,7 @@ export class BoardEntity {
   name: string
 
   @Field(() => [ListEntity])
-  @OneToMany(() => ListEntity, (list) => list.boardId)
+  @OneToMany(() => ListEntity, (list) => list.board)
   lists: ListEntity[]
 
   @Field()

@@ -1,29 +1,38 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, BaseEntity } from 'typeorm'
 import { Field, ObjectType, ID } from '@nestjs/graphql'
 
 import { UserEntity } from 'src/users'
 import { ListEntity } from 'src/lists'
 import { BoardEntity } from 'src/boards'
+import { LikeEntity } from './LikeEntity'
+
+export type CardId = string
 
 @ObjectType('Card')
 @Entity('card')
-export class CardEntity {
+export class CardEntity extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: CardId
 
   @Field()
   @Column({ default: 0 })
   index: number
 
-  @Field()
   @ManyToOne(() => ListEntity)
   @JoinColumn({ name: 'list_id' })
-  listId: string
+  list: ListEntity // Use this field only for join relations.
 
   @Field()
+  @Column({ name: 'list_id', type: 'uuid' })
+  listId: string
+
   @ManyToOne(() => BoardEntity)
   @JoinColumn({ name: 'board_id' })
+  board: BoardEntity // Use this field only for join relations.
+
+  @Field()
+  @Column({ name: 'board_id', type: 'uuid' })
   boardId: string
 
   @Field()
@@ -38,4 +47,13 @@ export class CardEntity {
   @Field()
   @Column({ default: false })
   solved: boolean
+
+  @Field(() => [LikeEntity])
+  @OneToMany(() => LikeEntity, (like) => like.card)
+  likes: LikeEntity[]
+
+  constructor(entity: Partial<CardEntity>) {
+    super()
+    Object.assign(this, entity)
+  }
 }

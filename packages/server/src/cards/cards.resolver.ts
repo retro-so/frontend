@@ -1,70 +1,68 @@
 import { UseGuards } from '@nestjs/common'
-import { Resolver, Mutation, Args, ID, Subscription } from '@nestjs/graphql'
-import { PubSub } from 'graphql-subscriptions'
+import { Resolver, Mutation, Args, ID } from '@nestjs/graphql'
 
 import { AccessAuthGuard, GqlUser } from 'src/auth'
 import { UserEntity } from 'src/users'
+import {
+  BoardSubscriptionService,
+  CardCreated,
+  CardUpdated,
+  CardRemoved,
+  CardLikeAdded,
+  CardLikeRemoved,
+} from 'src/BoardSubscription'
 
-import { CardEntity } from './card.entity'
+import { CardEntity, CardId } from './card.entity'
 import { CreateCardInput, UpdateCardInput } from './card.input'
 import { CardsService } from './cards.service'
+import { AddCardLikeInput } from './LikeInput'
 
 @UseGuards(AccessAuthGuard)
 @Resolver(() => CardEntity)
 export class CardsResolver {
-  private pubsub: PubSub
-
-  constructor(private cardsService: CardsService) {
-    // TODO: Use channel from DI.
-    this.pubsub = new PubSub()
-  }
+  constructor(
+    private cardsService: CardsService,
+    private boardSubscriptionService: BoardSubscriptionService,
+  ) {}
 
   @Mutation(() => CardEntity)
   async createCard(@GqlUser() user: UserEntity, @Args('card') cardData: CreateCardInput) {
     const card = await this.cardsService.createCard(cardData, user)
-    this.pubsub.publish(CARD_CREATED, { cardCreated: card })
-
+    await this.boardSubscriptionService.publish(CardCreated, card)
     return card
   }
 
   @Mutation(() => CardEntity)
   async updateCard(@Args('card') cardData: UpdateCardInput) {
     const card = await this.cardsService.updateCard(cardData)
-    this.pubsub.publish(CARD_UPDATED, { cardUpdated: card })
-
+    await this.boardSubscriptionService.publish(CardUpdated, card)
     return card
   }
 
   @Mutation(() => CardEntity)
   async removeCard(@Args('id', { type: () => ID }) cardId: string) {
     const card = await this.cardsService.removeCard(cardId)
-    this.pubsub.publish(CARD_REMOVED, { cardRemoved: card })
-
+    await this.boardSubscriptionService.publish(CardRemoved, card)
     return card
   }
 
-  @Subscription(() => CardEntity, { filter: isSameBoard('cardCreated') })
-  cardCreated(@Args('boardId', { type: () => ID }) _boardId: string) {
-    return this.pubsub.asyncIterator(CARD_CREATED)
+  @Mutation(() => Boolean)
+  async addCardLike(
+    @Args('like') likeData: AddCardLikeInput,
+    @GqlUser() user: UserEntity,
+  ) {
+    const like = await this.cardsService.addCardLike(likeData, user)
+    await this.boardSubscriptionService.publish(CardLikeAdded, like)
+    return true
   }
 
-  @Subscription(() => CardEntity, { filter: isSameBoard('cardUpdated') })
-  cardUpdated(@Args('boardId', { type: () => ID }) _boardId: string) {
-    return this.pubsub.asyncIterator(CARD_UPDATED)
-  }
-
-  @Subscription(() => CardEntity, { filter: isSameBoard('cardRemoved') })
-  cardRemoved(@Args('boardId', { type: () => ID }) _boardId: string) {
-    return this.pubsub.asyncIterator(CARD_REMOVED)
-  }
-}
-
-const CARD_CREATED = 'CARD_CREATED'
-const CARD_UPDATED = 'CARD_UPDATED'
-const CARD_REMOVED = 'CARD_REMOVED'
-
-function isSameBoard(key: string) {
-  return (payload: any, variables: any) => {
-    return payload[key].boardId === variables.boardId
+  @Mutation(() => Boolean)
+  async removeCardLike(
+    @Args('cardId', { type: () => ID }) cardId: CardId,
+    @GqlUser() user: UserEntity,
+  ) {
+    const like = await this.cardsService.removeCardLike(cardId, user)
+    await this.boardSubscriptionService.publish(CardLikeRemoved, like)
+    return true
   }
 }
