@@ -13,7 +13,10 @@ export function getPostgresConfig(configService: ConfigService): TypeOrmModuleOp
     username: configService.get('POSTGRES_USER'),
 
     // TODO: Resolve project root.
-    entities: [resolve(__dirname, '../../**/*.entity{.ts,.js}')],
+    entities: [
+      resolve(__dirname, '../../**/*.entity{.ts,.js}'),
+      resolve(__dirname, '../../**/*Entity{.ts,.js}'),
+    ],
 
     // TODO: Disable for production.
     synchronize: true,
