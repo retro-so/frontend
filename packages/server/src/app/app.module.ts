@@ -8,6 +8,7 @@ import { AuthModule } from 'src/auth'
 import { BoardsModule } from 'src/boards'
 import { ListsModule } from 'src/lists'
 import { CardsModule } from 'src/cards'
+import { BoardSubscriptionModule } from 'src/BoardSubscription'
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CardsModule } from 'src/cards'
     BoardsModule,
     ListsModule,
     CardsModule,
+    BoardSubscriptionModule,
   ],
 })
 export class AppModule {}
