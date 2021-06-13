@@ -19,6 +19,12 @@ type Card {
   content: String!
   author: User!
   solved: Boolean!
+  likes: [Like!]!
+}
+
+type Like {
+  authorId: ID!
+  cardId: ID!
 }
 
 type List {
@@ -48,6 +54,8 @@ type Mutation {
   createCard(card: CreateCardInput!): Card!
   updateCard(card: UpdateCardInput!): Card!
   removeCard(id: ID!): Card!
+  addCardLike(like: AddCardLikeInput!): Boolean!
+  removeCardLike(cardId: ID!): Boolean!
 }
 
 input CreateBoardInput {
@@ -71,8 +79,33 @@ input UpdateCardInput {
   solved: Boolean
 }
 
+input AddCardLikeInput {
+  cardId: ID!
+  boardId: ID!
+}
+
 type Subscription {
-  cardCreated(boardId: ID!): Card!
-  cardUpdated(boardId: ID!): Card!
-  cardRemoved(boardId: ID!): Card!
+  boardUpdated(boardId: ID!): BoardUpdated!
+}
+
+union BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved
+
+type CardCreated {
+  payload: Card!
+}
+
+type CardUpdated {
+  payload: Card!
+}
+
+type CardRemoved {
+  payload: Card!
+}
+
+type CardLikeAdded {
+  payload: Like!
+}
+
+type CardLikeRemoved {
+  payload: Like!
 }
