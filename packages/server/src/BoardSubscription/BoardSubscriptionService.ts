@@ -6,7 +6,7 @@ export const EVENT_KEY = 'boardUpdated'
 
 @Injectable()
 export class BoardSubscriptionService {
-  public pubSub: PubSub
+  private pubSub: PubSub
 
   constructor() {
     // TODO: Use channel from DI.
