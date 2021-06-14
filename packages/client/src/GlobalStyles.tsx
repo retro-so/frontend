@@ -13,7 +13,7 @@ export const GlobalStyles: FC = () => (
       }
 
       /* Lego patch start. */
-      .Button2::before {
+      .Button2[class]::before {
         border-radius: 8px;
       }
 

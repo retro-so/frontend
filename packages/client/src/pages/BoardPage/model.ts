@@ -2,6 +2,7 @@ import { OnSubscriptionDataOptions } from '@apollo/client'
 import {
   BoardUpdatedSubscription,
   CardCommonFieldsFragmentDoc,
+  ListCommonFieldsFragmentDoc,
   useBoardUpdatedSubscription,
   useFetchBoardQuery,
 } from '../../api/graphql'
@@ -39,6 +40,10 @@ function onSubscriptionData(options: Params) {
       return onCardLikeAdded(client, event.payload)
     case 'CardLikeRemoved':
       return onCardLikeRemoved(client, event.payload)
+    case 'ListCreated':
+      return onListCreated(client, event.payload)
+    case 'ListUpdated':
+      return onListUpdated(client, event.payload)
     default:
       throw new Error('Unhandled subscription type: ' + event?.__typename)
   }
@@ -71,9 +76,7 @@ function onCardRemoved(client: any, card: any) {
   })
 }
 
-function onCardUpdated(client: any, card: any) {
-  return undefined
-}
+function onCardUpdated(client: any, card: any) {}
 
 function onCardLikeAdded(client: any, like: any) {
   client.cache.modify({
@@ -96,3 +99,21 @@ function onCardLikeRemoved(client: any, like: any) {
     },
   })
 }
+
+function onListCreated(client: any, list: any) {
+  client.cache.modify({
+    id: `Board:${list.boardId}`,
+    fields: {
+      lists: (listsRef: any) => {
+        const listRef = client.cache.writeFragment({
+          fragment: ListCommonFieldsFragmentDoc,
+          data: list,
+        })
+
+        return [...listsRef, listRef]
+      },
+    },
+  })
+}
+
+function onListUpdated(client: any, list: any) {}

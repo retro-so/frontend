@@ -16,6 +16,7 @@ fragment ListCommonFields on List {
   id
   name
   index
+  boardId
 }
 
 query FetchBoard($id: ID!) {
@@ -64,6 +65,12 @@ mutation RemoveCardLike($cardId: ID!) {
   removeCardLike(cardId: $cardId)
 }
 
+mutation UpdateList($list: UpdateListInput!) {
+  updateList(list: $list) {
+    name
+  }
+}
+
 subscription BoardUpdated($boardId: ID!) {
   boardUpdated(boardId: $boardId) {
     ... on CardCreated {
@@ -92,6 +99,16 @@ subscription BoardUpdated($boardId: ID!) {
       payload {
         cardId
         authorId
+      }
+    }
+    ... on ListCreated {
+      payload {
+        ...ListCommonFields
+      }
+    }
+    ... on ListUpdated {
+      payload {
+        ...ListCommonFields
       }
     }
   }

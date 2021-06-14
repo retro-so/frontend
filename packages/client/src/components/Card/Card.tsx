@@ -87,7 +87,7 @@ export const Card: FC<CardProps> = (props) => {
 export const Container = styled.div`
   box-shadow: 0px 0px 0px 0.5px rgba(0, 44, 94, 0.1), 0px 8px 16px -3px rgba(0, 44, 94, 0.15);
   background-color: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 16px;
   padding-right: 24px;
   margin-bottom: 16px;

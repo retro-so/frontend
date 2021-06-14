@@ -28,14 +28,14 @@ export type Board = {
   createdAt: Scalars['String'];
 };
 
-export type BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved;
+export type BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved | ListCreated | ListUpdated;
 
 export type Card = {
   __typename?: 'Card';
   id: Scalars['ID'];
   index: Scalars['Float'];
   listId: Scalars['String'];
-  boardId: Scalars['String'];
+  boardId: Scalars['ID'];
   content: Scalars['String'];
   author: User;
   solved: Scalars['Boolean'];
@@ -92,14 +92,26 @@ export type List = {
   __typename?: 'List';
   id: Scalars['ID'];
   index: Scalars['Int'];
+  boardId: Scalars['ID'];
   name: Scalars['String'];
   cards: Array<Card>;
+};
+
+export type ListCreated = {
+  __typename?: 'ListCreated';
+  payload: List;
+};
+
+export type ListUpdated = {
+  __typename?: 'ListUpdated';
+  payload: List;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
   createList: List;
+  updateList: List;
   createCard: Card;
   updateCard: Card;
   removeCard: Card;
@@ -115,6 +127,11 @@ export type MutationCreateBoardArgs = {
 
 export type MutationCreateListArgs = {
   list: CreateListInput;
+};
+
+
+export type MutationUpdateListArgs = {
+  list: UpdateListInput;
 };
 
 
@@ -170,6 +187,11 @@ export type UpdateCardInput = {
   solved?: Maybe<Scalars['Boolean']>;
 };
 
+export type UpdateListInput = {
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -205,7 +227,7 @@ export type CardCommonFieldsFragment = (
 
 export type ListCommonFieldsFragment = (
   { __typename?: 'List' }
-  & Pick<List, 'id' | 'name' | 'index'>
+  & Pick<List, 'id' | 'name' | 'index' | 'boardId'>
 );
 
 export type FetchBoardQueryVariables = Exact<{
@@ -301,6 +323,19 @@ export type RemoveCardLikeMutation = (
   & Pick<Mutation, 'removeCardLike'>
 );
 
+export type UpdateListMutationVariables = Exact<{
+  list: UpdateListInput;
+}>;
+
+
+export type UpdateListMutation = (
+  { __typename?: 'Mutation' }
+  & { updateList: (
+    { __typename?: 'List' }
+    & Pick<List, 'name'>
+  ) }
+);
+
 export type BoardUpdatedSubscriptionVariables = Exact<{
   boardId: Scalars['ID'];
 }>;
@@ -337,6 +372,18 @@ export type BoardUpdatedSubscription = (
     & { payload: (
       { __typename?: 'Like' }
       & Pick<Like, 'cardId' | 'authorId'>
+    ) }
+  ) | (
+    { __typename?: 'ListCreated' }
+    & { payload: (
+      { __typename?: 'List' }
+      & ListCommonFieldsFragment
+    ) }
+  ) | (
+    { __typename?: 'ListUpdated' }
+    & { payload: (
+      { __typename?: 'List' }
+      & ListCommonFieldsFragment
     ) }
   ) }
 );
@@ -390,6 +437,7 @@ export const ListCommonFieldsFragmentDoc = gql`
   id
   name
   index
+  boardId
 }
     `;
 export const BoardCommonFieldsFragmentDoc = gql`
@@ -672,6 +720,39 @@ export function useRemoveCardLikeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemoveCardLikeMutationHookResult = ReturnType<typeof useRemoveCardLikeMutation>;
 export type RemoveCardLikeMutationResult = Apollo.MutationResult<RemoveCardLikeMutation>;
 export type RemoveCardLikeMutationOptions = Apollo.BaseMutationOptions<RemoveCardLikeMutation, RemoveCardLikeMutationVariables>;
+export const UpdateListDocument = gql`
+    mutation UpdateList($list: UpdateListInput!) {
+  updateList(list: $list) {
+    name
+  }
+}
+    `;
+export type UpdateListMutationFn = Apollo.MutationFunction<UpdateListMutation, UpdateListMutationVariables>;
+
+/**
+ * __useUpdateListMutation__
+ *
+ * To run a mutation, you first call `useUpdateListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateListMutation, { data, loading, error }] = useUpdateListMutation({
+ *   variables: {
+ *      list: // value for 'list'
+ *   },
+ * });
+ */
+export function useUpdateListMutation(baseOptions?: Apollo.MutationHookOptions<UpdateListMutation, UpdateListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateListMutation, UpdateListMutationVariables>(UpdateListDocument, options);
+      }
+export type UpdateListMutationHookResult = ReturnType<typeof useUpdateListMutation>;
+export type UpdateListMutationResult = Apollo.MutationResult<UpdateListMutation>;
+export type UpdateListMutationOptions = Apollo.BaseMutationOptions<UpdateListMutation, UpdateListMutationVariables>;
 export const BoardUpdatedDocument = gql`
     subscription BoardUpdated($boardId: ID!) {
   boardUpdated(boardId: $boardId) {
@@ -703,9 +784,20 @@ export const BoardUpdatedDocument = gql`
         authorId
       }
     }
+    ... on ListCreated {
+      payload {
+        ...ListCommonFields
+      }
+    }
+    ... on ListUpdated {
+      payload {
+        ...ListCommonFields
+      }
+    }
   }
 }
-    ${CardCommonFieldsFragmentDoc}`;
+    ${CardCommonFieldsFragmentDoc}
+${ListCommonFieldsFragmentDoc}`;
 
 /**
  * __useBoardUpdatedSubscription__
