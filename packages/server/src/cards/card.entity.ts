@@ -31,7 +31,7 @@ export class CardEntity extends BaseEntity {
   @JoinColumn({ name: 'board_id' })
   board: BoardEntity // Use this field only for join relations.
 
-  @Field()
+  @Field(() => ID)
   @Column({ name: 'board_id', type: 'uuid' })
   boardId: string
 

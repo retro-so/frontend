@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, BaseEntity } from 'typeorm'
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql'
 
 import { BoardEntity } from 'src/boards'
@@ -6,7 +6,7 @@ import { CardEntity } from 'src/cards'
 
 @ObjectType('List')
 @Entity('list')
-export class ListEntity {
+export class ListEntity extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -19,7 +19,7 @@ export class ListEntity {
   @JoinColumn({ name: 'board_id' })
   board: BoardEntity
 
-  @ManyToOne(() => BoardEntity)
+  @Field(() => ID)
   @Column({ name: 'board_id', type: 'uuid' })
   boardId: string
 
