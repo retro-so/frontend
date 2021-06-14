@@ -2,8 +2,13 @@ fragment CardCommonFields on Card {
   id
   content
   solved
+  listId
+  boardId
   author {
     displayName
+  }
+  likes {
+    authorId
   }
 }
 
@@ -51,23 +56,43 @@ mutation RemoveCard($id: ID!) {
   }
 }
 
-subscription CardCreated($boardId: ID!) {
-  cardCreated(boardId: $boardId) {
-    listId
-    ...CardCommonFields
-  }
+mutation AddCardLike($like: AddCardLikeInput!) {
+  addCardLike(like: $like)
 }
 
-subscription CardUpdated($boardId: ID!) {
-  cardUpdated(boardId: $boardId) {
-    listId
-    ...CardCommonFields
-  }
+mutation RemoveCardLike($cardId: ID!) {
+  removeCardLike(cardId: $cardId)
 }
 
-subscription CardRemoved($boardId: ID!) {
-  cardRemoved(boardId: $boardId) {
-    id
-    listId
+subscription BoardUpdated($boardId: ID!) {
+  boardUpdated(boardId: $boardId) {
+    ... on CardCreated {
+      payload {
+        ...CardCommonFields
+      }
+    }
+    ... on CardUpdated {
+      payload {
+        ...CardCommonFields
+      }
+    }
+    ... on CardRemoved {
+      payload {
+        id
+        listId
+      }
+    }
+    ... on CardLikeAdded {
+      payload {
+        cardId
+        authorId
+      }
+    }
+    ... on CardLikeRemoved {
+      payload {
+        cardId
+        authorId
+      }
+    }
   }
 }

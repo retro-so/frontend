@@ -38,8 +38,7 @@ export const Column: FC<ColumnProps> = (props) => {
           </Text>
         </Header>
         <Cards ref={cardsRef}>
-          {/* FIXME: Remove optional operator. */}
-          {cards.map((card: any) => (
+          {cards.map((card) => (
             <Card {...card} key={card.id} />
           ))}
           {isCreatorMode && (
