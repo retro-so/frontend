@@ -10,3 +10,12 @@ export class CreateListInput implements Partial<ListEntity> {
   @Field(() => ID)
   boardId: string
 }
+
+@InputType()
+export class UpdateListInput implements Partial<ListEntity> {
+  @Field(() => ID)
+  id: string
+
+  @Field()
+  name: string
+}

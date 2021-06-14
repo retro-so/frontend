@@ -11,25 +11,26 @@ type User {
   avatarUrl: String!
 }
 
+type Like {
+  authorId: ID!
+  cardId: ID!
+}
+
 type Card {
   id: ID!
   index: Float!
   listId: String!
-  boardId: String!
+  boardId: ID!
   content: String!
   author: User!
   solved: Boolean!
   likes: [Like!]!
 }
 
-type Like {
-  authorId: ID!
-  cardId: ID!
-}
-
 type List {
   id: ID!
   index: Int!
+  boardId: ID!
   name: String!
   cards: [Card!]!
 }
@@ -51,6 +52,7 @@ type Query {
 type Mutation {
   createBoard(board: CreateBoardInput!): Board!
   createList(list: CreateListInput!): List!
+  updateList(list: UpdateListInput!): List!
   createCard(card: CreateCardInput!): Card!
   updateCard(card: UpdateCardInput!): Card!
   removeCard(id: ID!): Card!
@@ -65,6 +67,11 @@ input CreateBoardInput {
 input CreateListInput {
   name: String!
   boardId: ID!
+}
+
+input UpdateListInput {
+  id: ID!
+  name: String!
 }
 
 input CreateCardInput {
@@ -88,7 +95,7 @@ type Subscription {
   boardUpdated(boardId: ID!): BoardUpdated!
 }
 
-union BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved
+union BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved | ListCreated | ListUpdated
 
 type CardCreated {
   payload: Card!
@@ -108,4 +115,12 @@ type CardLikeAdded {
 
 type CardLikeRemoved {
   payload: Like!
+}
+
+type ListCreated {
+  payload: List!
+}
+
+type ListUpdated {
+  payload: List!
 }
