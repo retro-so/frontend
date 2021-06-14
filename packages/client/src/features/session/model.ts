@@ -1,7 +1,8 @@
-import { MeDocument, MeQuery, useMeQuery } from '../../api/graphql'
-import { client } from '../../libs/apollo'
+import { ApolloClient } from '@apollo/client'
 
-export async function loadSession() {
+import { MeDocument, MeQuery, useMeQuery } from '../../api/graphql'
+
+export async function loadSession(client: ApolloClient<{}>) {
   try {
     const result = await client.query<MeQuery>({ query: MeDocument })
 

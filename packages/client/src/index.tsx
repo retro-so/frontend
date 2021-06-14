@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { Router } from 'react-router'
 import { render } from 'react-dom'
+import { ApolloProvider } from '@apollo/client'
 
 import { Pages } from './pages'
 import { GlobalStyles } from './GlobalStyles'
@@ -9,13 +10,15 @@ import { history } from './libs/history'
 import { loadSession } from './features/session'
 import { LegoThemeProvider } from './components/LegoThemeProvider'
 import { PageLoading } from './components/PageLoading'
-import { ApolloProvider } from './libs/apollo'
+import { createApolloClient } from './libs/apolloClient'
 
-loadSession().then(() => {
+const apolloClient = createApolloClient()
+
+loadSession(apolloClient).then(() => {
   render(
     <>
       <GlobalStyles />
-      <ApolloProvider>
+      <ApolloProvider client={apolloClient}>
         <LegoThemeProvider>
           <Router history={history}>
             <Suspense fallback={<PageLoading />}>
