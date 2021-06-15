@@ -1,4 +1,5 @@
 import { OnSubscriptionDataOptions } from '@apollo/client'
+
 import {
   BoardUpdatedSubscription,
   CardCommonFieldsFragmentDoc,
@@ -44,36 +45,32 @@ function onSubscriptionData(options: Params) {
       return onListCreated(client, event.payload)
     case 'ListUpdated':
       return onListUpdated(client, event.payload)
+    case 'ListRemoved':
+      return onListRemoved(client, event.payload)
     default:
       throw new Error('Unhandled subscription type: ' + event?.__typename)
   }
 }
 
 function onCardCreated(client: Client, card: any) {
+  const cardRef = client.cache.writeFragment({
+    fragment: CardCommonFieldsFragmentDoc,
+    data: card,
+  })
+
   client.cache.modify({
     id: `List:${card.listId}`,
     fields: {
       cards: (cardsRefs: any) => {
-        const cardRef = client.cache.writeFragment({
-          fragment: CardCommonFieldsFragmentDoc,
-          data: card,
-        })
-
         return [...cardsRefs, cardRef]
       },
     },
   })
 }
 
-function onCardRemoved(client: any, card: any) {
-  client.cache.modify({
-    id: `List:${card.listId}`,
-    fields: {
-      cards: (cardsRefs: any, { readField }: any) => {
-        return cardsRefs.filter((ref: any) => readField('id', ref) !== card.id)
-      },
-    },
-  })
+function onCardRemoved(client: Client, card: any) {
+  client.cache.evict({ id: client.cache.identify(card) })
+  client.cache.gc()
 }
 
 function onCardUpdated(client: any, card: any) {}
@@ -101,15 +98,15 @@ function onCardLikeRemoved(client: any, like: any) {
 }
 
 function onListCreated(client: any, list: any) {
+  const listRef = client.cache.writeFragment({
+    fragment: ListCommonFieldsFragmentDoc,
+    data: list,
+  })
+
   client.cache.modify({
     id: `Board:${list.boardId}`,
     fields: {
       lists: (listsRef: any) => {
-        const listRef = client.cache.writeFragment({
-          fragment: ListCommonFieldsFragmentDoc,
-          data: list,
-        })
-
         return [...listsRef, listRef]
       },
     },
@@ -117,3 +114,8 @@ function onListCreated(client: any, list: any) {
 }
 
 function onListUpdated(client: any, list: any) {}
+
+function onListRemoved(client: Client, list: any) {
+  client.cache.evict({ id: client.cache.identify(list) })
+  client.cache.gc()
+}

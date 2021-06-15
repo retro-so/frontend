@@ -5,7 +5,25 @@ import { HttpLink } from '@apollo/client/link/http'
 import { WebSocketLink } from '@apollo/client/link/ws'
 
 export function createApolloClient() {
-  const cache = new InMemoryCache()
+  // TODO: Generate types for cache.
+  const cache = new InMemoryCache({
+    typePolicies: {
+      List: {
+        fields: {
+          cards: {
+            merge: false,
+          },
+        },
+      },
+      Board: {
+        fields: {
+          lists: {
+            merge: false,
+          },
+        },
+      },
+    },
+  })
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)

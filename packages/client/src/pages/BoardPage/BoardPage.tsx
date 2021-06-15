@@ -4,7 +4,7 @@ import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
 
 import { Header } from '../../components/Header'
-import { Column } from '../../components/Column'
+import { List } from '../../components/List'
 import { useCreateListMutation } from '../../api/graphql'
 import { useAuthGuard } from '../../features/session'
 import { BoardRouteParams } from '../paths'
@@ -49,7 +49,7 @@ export const BoardPage: FC = () => {
         <Columns>
           {data?.board.lists.map((list) => (
             // @ts-expect-error
-            <Column {...list} boardId={id} key={list.id} />
+            <List {...list} boardId={id} key={list.id} />
           ))}
         </Columns>
       </Canvas>

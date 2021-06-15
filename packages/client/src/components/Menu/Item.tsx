@@ -10,7 +10,7 @@ export const Item: FC<ItemProps> = (props) => {
 }
 
 const Container = styled.div`
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 8px;
   display: flex;
   align-items: center;

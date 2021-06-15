@@ -28,7 +28,7 @@ export type Board = {
   createdAt: Scalars['String'];
 };
 
-export type BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved | ListCreated | ListUpdated;
+export type BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved | ListCreated | ListUpdated | ListRemoved;
 
 export type Card = {
   __typename?: 'Card';
@@ -102,6 +102,11 @@ export type ListCreated = {
   payload: List;
 };
 
+export type ListRemoved = {
+  __typename?: 'ListRemoved';
+  payload: List;
+};
+
 export type ListUpdated = {
   __typename?: 'ListUpdated';
   payload: List;
@@ -112,6 +117,7 @@ export type Mutation = {
   createBoard: Board;
   createList: List;
   updateList: List;
+  removeList: List;
   createCard: Card;
   updateCard: Card;
   removeCard: Card;
@@ -132,6 +138,11 @@ export type MutationCreateListArgs = {
 
 export type MutationUpdateListArgs = {
   list: UpdateListInput;
+};
+
+
+export type MutationRemoveListArgs = {
+  listId: Scalars['ID'];
 };
 
 
@@ -336,6 +347,19 @@ export type UpdateListMutation = (
   ) }
 );
 
+export type RemoveListMutationVariables = Exact<{
+  listId: Scalars['ID'];
+}>;
+
+
+export type RemoveListMutation = (
+  { __typename?: 'Mutation' }
+  & { removeList: (
+    { __typename?: 'List' }
+    & Pick<List, 'id'>
+  ) }
+);
+
 export type BoardUpdatedSubscriptionVariables = Exact<{
   boardId: Scalars['ID'];
 }>;
@@ -359,7 +383,7 @@ export type BoardUpdatedSubscription = (
     { __typename?: 'CardRemoved' }
     & { payload: (
       { __typename?: 'Card' }
-      & Pick<Card, 'id' | 'listId'>
+      & Pick<Card, 'id'>
     ) }
   ) | (
     { __typename?: 'CardLikeAdded' }
@@ -384,6 +408,12 @@ export type BoardUpdatedSubscription = (
     & { payload: (
       { __typename?: 'List' }
       & ListCommonFieldsFragment
+    ) }
+  ) | (
+    { __typename?: 'ListRemoved' }
+    & { payload: (
+      { __typename?: 'List' }
+      & Pick<List, 'id'>
     ) }
   ) }
 );
@@ -753,6 +783,39 @@ export function useUpdateListMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateListMutationHookResult = ReturnType<typeof useUpdateListMutation>;
 export type UpdateListMutationResult = Apollo.MutationResult<UpdateListMutation>;
 export type UpdateListMutationOptions = Apollo.BaseMutationOptions<UpdateListMutation, UpdateListMutationVariables>;
+export const RemoveListDocument = gql`
+    mutation RemoveList($listId: ID!) {
+  removeList(listId: $listId) {
+    id
+  }
+}
+    `;
+export type RemoveListMutationFn = Apollo.MutationFunction<RemoveListMutation, RemoveListMutationVariables>;
+
+/**
+ * __useRemoveListMutation__
+ *
+ * To run a mutation, you first call `useRemoveListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeListMutation, { data, loading, error }] = useRemoveListMutation({
+ *   variables: {
+ *      listId: // value for 'listId'
+ *   },
+ * });
+ */
+export function useRemoveListMutation(baseOptions?: Apollo.MutationHookOptions<RemoveListMutation, RemoveListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveListMutation, RemoveListMutationVariables>(RemoveListDocument, options);
+      }
+export type RemoveListMutationHookResult = ReturnType<typeof useRemoveListMutation>;
+export type RemoveListMutationResult = Apollo.MutationResult<RemoveListMutation>;
+export type RemoveListMutationOptions = Apollo.BaseMutationOptions<RemoveListMutation, RemoveListMutationVariables>;
 export const BoardUpdatedDocument = gql`
     subscription BoardUpdated($boardId: ID!) {
   boardUpdated(boardId: $boardId) {
@@ -769,7 +832,6 @@ export const BoardUpdatedDocument = gql`
     ... on CardRemoved {
       payload {
         id
-        listId
       }
     }
     ... on CardLikeAdded {
@@ -792,6 +854,11 @@ export const BoardUpdatedDocument = gql`
     ... on ListUpdated {
       payload {
         ...ListCommonFields
+      }
+    }
+    ... on ListRemoved {
+      payload {
+        id
       }
     }
   }

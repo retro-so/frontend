@@ -71,6 +71,12 @@ mutation UpdateList($list: UpdateListInput!) {
   }
 }
 
+mutation RemoveList($listId: ID!) {
+  removeList(listId: $listId) {
+    id
+  }
+}
+
 subscription BoardUpdated($boardId: ID!) {
   boardUpdated(boardId: $boardId) {
     ... on CardCreated {
@@ -86,7 +92,6 @@ subscription BoardUpdated($boardId: ID!) {
     ... on CardRemoved {
       payload {
         id
-        listId
       }
     }
     ... on CardLikeAdded {
@@ -109,6 +114,11 @@ subscription BoardUpdated($boardId: ID!) {
     ... on ListUpdated {
       payload {
         ...ListCommonFields
+      }
+    }
+    ... on ListRemoved {
+      payload {
+        id
       }
     }
   }

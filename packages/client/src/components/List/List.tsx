@@ -1,18 +1,32 @@
-import { FC, FocusEvent, useEffect, useRef, useState } from 'react'
+import {
+  FC,
+  BaseSyntheticEvent,
+  FocusEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
 
-import { List as ListType, useCreateCardMutation, useUpdateListMutation } from '../api/graphql'
-import { Card, EditableCard } from './Card'
-import { PlusIcon } from './Icons/PlusIcon'
+import {
+  List as ListType,
+  useCreateCardMutation,
+  useRemoveListMutation,
+  useUpdateListMutation,
+} from '../../api/graphql'
+import { DropdownMenu } from './DropdownMenu'
+import { Card, EditableCard } from '../Card'
+import { PlusIcon } from '../Icons/PlusIcon'
 
-type ColumnProps = ListType & {
+type ListProps = ListType & {
   boardId: string
 }
 
-export const Column: FC<ColumnProps> = (props) => {
+export const List: FC<ListProps> = (props) => {
   const { id, name, cards, boardId } = props
 
   const [isEditMode, setEditMode] = useState(false)
@@ -20,6 +34,7 @@ export const Column: FC<ColumnProps> = (props) => {
   const [isCreatorMode, setCreatorMode] = useState(false)
   const [createCard] = useCreateCardMutation()
   const [updateList] = useUpdateListMutation()
+  const [removeList] = useRemoveListMutation()
 
   useEffect(() => {
     if (isCreatorMode) {
@@ -36,19 +51,42 @@ export const Column: FC<ColumnProps> = (props) => {
     setEditMode(true)
   }
 
-  const onStopEdit = (event: FocusEvent<HTMLInputElement>) => {
-    updateList({ variables: { list: { id, name: event.target.value } } })
-    setEditMode(false)
+  const onStopEdit = (event: FocusEvent<HTMLInputElement> | KeyboardEvent<HTMLInputElement>) => {
+    let shouldApplyChanges = true
+
+    if (event.type === 'keydown') {
+      const keyboardEvent = event as KeyboardEvent
+      shouldApplyChanges = keyboardEvent.code === 'Escape' || keyboardEvent.code === 'Enter'
+    }
+
+    if (shouldApplyChanges) {
+      const baseEvent = event as BaseSyntheticEvent
+      updateList({ variables: { list: { id, name: baseEvent.target.value } } })
+      setEditMode(false)
+    }
+  }
+
+  const onDelete = () => {
+    if (window.confirm('Delete this list?')) {
+      removeList({ variables: { listId: id } })
+    }
   }
 
   return (
     <Container>
+      <DropdownMenu onDeleteAction={onDelete} />
       <Inner>
         <Header>
           {isEditMode ? (
-            <Textinput className="Header-Input" value={name} autoFocus onBlur={onStopEdit} />
+            <Textinput
+              className="Header-Input"
+              value={name}
+              autoFocus
+              onBlur={onStopEdit}
+              onKeyDown={onStopEdit}
+            />
           ) : (
-            <span onClick={onStartEdit}>
+            <span onClick={onStartEdit} onFocus={onStartEdit} tabIndex={0}>
               <Text typography="headline-xs" as="h2" color="secondary">
                 {name}
               </Text>
@@ -75,6 +113,7 @@ export const Column: FC<ColumnProps> = (props) => {
 }
 
 const Container = styled.div`
+  position: relative;
   height: 100%;
   flex: 0 0 380px;
 
