@@ -46,6 +46,12 @@ export class ListUpdated {
   payload: ListEntity
 }
 
+@ObjectType()
+export class ListRemoved {
+  @Field(() => ListEntity)
+  payload: ListEntity
+}
+
 export const BoardUpdated = createUnionType({
   name: 'BoardUpdated',
   types: () => [
@@ -56,6 +62,7 @@ export const BoardUpdated = createUnionType({
     CardLikeRemoved,
     ListCreated,
     ListUpdated,
+    ListRemoved,
   ],
   resolveType: (value) => value.action,
 })

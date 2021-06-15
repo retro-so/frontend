@@ -18,7 +18,7 @@ export class ListsService {
   }
 
   async updateList(listData: UpdateListInput): Promise<ListEntity> {
-    const list = await this.listRepo.findOne({id: listData.id})
+    const list = await this.listRepo.findOne({ id: listData.id })
 
     if (!list) {
       // TODO: Add validation.
@@ -27,6 +27,21 @@ export class ListsService {
 
     Object.assign(list, listData)
 
-    return list.save()
+    await list.save()
+
+    return list
+  }
+
+  async removeList(listId: string): Promise<ListEntity> {
+    const list = await this.listRepo.findOne({ id: listId })
+
+    if (!list) {
+      // TODO: Add validation.
+      throw new Error('')
+    }
+
+    await this.listRepo.delete({ id: list.id })
+
+    return list
   }
 }

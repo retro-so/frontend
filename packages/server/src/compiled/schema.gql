@@ -53,6 +53,7 @@ type Mutation {
   createBoard(board: CreateBoardInput!): Board!
   createList(list: CreateListInput!): List!
   updateList(list: UpdateListInput!): List!
+  removeList(listId: ID!): List!
   createCard(card: CreateCardInput!): Card!
   updateCard(card: UpdateCardInput!): Card!
   removeCard(id: ID!): Card!
@@ -95,7 +96,7 @@ type Subscription {
   boardUpdated(boardId: ID!): BoardUpdated!
 }
 
-union BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved | ListCreated | ListUpdated
+union BoardUpdated = CardCreated | CardUpdated | CardRemoved | CardLikeAdded | CardLikeRemoved | ListCreated | ListUpdated | ListRemoved
 
 type CardCreated {
   payload: Card!
@@ -122,5 +123,9 @@ type ListCreated {
 }
 
 type ListUpdated {
+  payload: List!
+}
+
+type ListRemoved {
   payload: List!
 }

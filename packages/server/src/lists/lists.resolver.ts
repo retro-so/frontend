@@ -1,8 +1,8 @@
 import { UseGuards } from '@nestjs/common'
-import { Resolver, Mutation, Args } from '@nestjs/graphql'
+import { Resolver, Mutation, Args, ID } from '@nestjs/graphql'
 
 import { AccessAuthGuard } from 'src/auth'
-import { BoardSubscriptionService, ListCreated, ListUpdated } from 'src/BoardSubscription'
+import { BoardSubscriptionService, ListCreated, ListRemoved, ListUpdated } from 'src/BoardSubscription'
 
 import { ListEntity } from './list.entity'
 import { CreateListInput, UpdateListInput } from './list.input'
@@ -28,6 +28,14 @@ export class ListsResolver {
   async updateList(@Args('list') listData: UpdateListInput) {
     const list = await this.listsService.updateList(listData)
     await this.boardSubscriptionService.publish(ListUpdated, list)
+
+    return list
+  }
+
+  @Mutation(() => ListEntity)
+  async removeList(@Args('listId', { type: () => ID }) listId: string) {
+    const list = await this.listsService.removeList(listId)
+    await this.boardSubscriptionService.publish(ListRemoved, list)
 
     return list
   }
