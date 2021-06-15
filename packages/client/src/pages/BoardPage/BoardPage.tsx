@@ -16,7 +16,6 @@ export const BoardPage: FC = () => {
   const { id } = useParams<BoardRouteParams>()
   const { error, data, loading } = useBoardPageModel(id)
   const [createList] = useCreateListMutation()
-  const [columnName, setColumnName] = useState('')
 
   if (error) {
     throw new Error(error as any)
@@ -32,25 +31,19 @@ export const BoardPage: FC = () => {
       <Text typography="headline-m">{data?.board.name}</Text>
       <hr />
       <div>Users: ...</div>
-      <hr />
-      <div>
-        <button
-          onClick={() => {
-            createList({ variables: { list: { name: columnName, boardId: id } } })
-            setColumnName('')
-          }}
-        >
-          Create column
-        </button>
-        <input onChange={(event) => setColumnName(event.target.value)} value={columnName} />
-      </div>
-      <hr />
       <Canvas>
         <Columns>
           {data?.board.lists.map((list) => (
             // @ts-expect-error
             <List {...list} boardId={id} key={list.id} />
           ))}
+          <button
+            onClick={() => {
+              createList({ variables: { list: { name: '<List name>', boardId: id } } })
+            }}
+          >
+            Create column
+          </button>
         </Columns>
       </Canvas>
     </Container>
