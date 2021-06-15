@@ -15,7 +15,7 @@ export const Header: FC = () => {
 const Container = styled.div`
   display: flex;
   align-items: center;
-  flex: 1 0 auto;
+  flex: 0 0 auto;
   height: 48px;
   padding: 0 16px;
   justify-content: space-between;
