@@ -73,18 +73,25 @@ export class CardsService {
   }
 
   async updateCard(cardData: UpdateCardInput) {
-    const card = await this.cardRepo.findOne(
-      { id: cardData.id },
-      { relations: ['author', 'likes'] },
-    )
-    const nextCard = Object.assign(card, cardData)
+    const card = await this.cardRepo.findOne({ id: cardData.id })
 
-    return this.cardRepo.save(nextCard)
+    if (!card) {
+      // TODO: Add validation.
+      throw new Error('')
+    }
+
+    return this.cardRepo.save({ ...card, ...cardData })
   }
 
   async removeCard(cardId: string) {
     const card = await this.cardRepo.findOne({ id: cardId })
-    await this.cardRepo.delete(card)
+
+    if (!card) {
+      // TODO: Add validation.
+      throw new Error('')
+    }
+
+    await this.cardRepo.delete({ id: cardId })
 
     return card
   }

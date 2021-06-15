@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, BaseEntity } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  BaseEntity,
+} from 'typeorm'
 import { Field, ObjectType, ID } from '@nestjs/graphql'
 
 import { UserEntity } from 'src/users'
@@ -19,7 +27,7 @@ export class CardEntity extends BaseEntity {
   @Column({ default: 0 })
   index: number
 
-  @ManyToOne(() => ListEntity)
+  @ManyToOne(() => ListEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'list_id' })
   list: ListEntity // Use this field only for join relations.
 
@@ -40,7 +48,7 @@ export class CardEntity extends BaseEntity {
   content: string
 
   @Field(() => UserEntity)
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { eager: true }) // Use eager for load relations.
   @JoinColumn({ name: 'author_id' })
   author: UserEntity
 
@@ -49,7 +57,7 @@ export class CardEntity extends BaseEntity {
   solved: boolean
 
   @Field(() => [LikeEntity])
-  @OneToMany(() => LikeEntity, (like) => like.card)
+  @OneToMany(() => LikeEntity, (like) => like.card, { eager: true }) // Use eager for load relations.
   likes: LikeEntity[]
 
   constructor(entity: Partial<CardEntity>) {

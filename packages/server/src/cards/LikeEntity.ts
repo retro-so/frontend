@@ -15,7 +15,7 @@ export class LikeEntity extends BaseEntity {
   @JoinColumn({ name: 'author_id' })
   author: UserEntity // Use this field only for join relations.
 
-  @OneToOne(() => CardEntity)
+  @ManyToOne(() => CardEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'card_id' })
   card: CardEntity // Use this field only for join relations.
 
