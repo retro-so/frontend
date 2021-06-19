@@ -13,13 +13,9 @@ import { useBoardPageModel } from './model'
 export const BoardPage: FC = () => {
   useAuthGuard()
 
-  const { id } = useParams<BoardRouteParams>()
-  const { error, data, loading } = useBoardPageModel(id)
+  const { link } = useParams<BoardRouteParams>()
+  const { data, loading } = useBoardPageModel(link)
   const [createList] = useCreateListMutation()
-
-  if (error) {
-    throw new Error(error as any)
-  }
 
   if (loading) {
     return <div>Loading...</div>
@@ -35,11 +31,11 @@ export const BoardPage: FC = () => {
         <Columns>
           {data?.board.lists.map((list) => (
             // @ts-expect-error
-            <List {...list} boardId={id} key={list.id} />
+            <List {...list} boardId={data!.board.id} key={list.id} />
           ))}
           <button
             onClick={() => {
-              createList({ variables: { list: { name: '<List name>', boardId: id } } })
+              createList({ variables: { list: { name: '<List name>', boardId: data!.board.id } } })
             }}
           >
             Create column

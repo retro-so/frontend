@@ -22,6 +22,7 @@ export type AddCardLikeInput = {
 export type Board = {
   __typename?: 'Board';
   id: Scalars['ID'];
+  link: Scalars['String'];
   owner: User;
   name: Scalars['String'];
   lists: Array<List>;
@@ -179,7 +180,7 @@ export type Query = {
 
 
 export type QueryBoardArgs = {
-  id: Scalars['ID'];
+  boardLink: Scalars['String'];
 };
 
 export type Subscription = {
@@ -242,7 +243,7 @@ export type ListCommonFieldsFragment = (
 );
 
 export type FetchBoardQueryVariables = Exact<{
-  id: Scalars['ID'];
+  boardLink: Scalars['String'];
 }>;
 
 
@@ -420,7 +421,7 @@ export type BoardUpdatedSubscription = (
 
 export type BoardCommonFieldsFragment = (
   { __typename?: 'Board' }
-  & Pick<Board, 'id' | 'name'>
+  & Pick<Board, 'id' | 'link' | 'name'>
 );
 
 export type FetchBoardsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -473,6 +474,7 @@ export const ListCommonFieldsFragmentDoc = gql`
 export const BoardCommonFieldsFragmentDoc = gql`
     fragment BoardCommonFields on Board {
   id
+  link
   name
 }
     `;
@@ -513,8 +515,8 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const FetchBoardDocument = gql`
-    query FetchBoard($id: ID!) {
-  board(id: $id) {
+    query FetchBoard($boardLink: String!) {
+  board(boardLink: $boardLink) {
     id
     name
     lists {
@@ -540,7 +542,7 @@ ${CardCommonFieldsFragmentDoc}`;
  * @example
  * const { data, loading, error } = useFetchBoardQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      boardLink: // value for 'boardLink'
  *   },
  * });
  */

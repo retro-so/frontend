@@ -19,8 +19,8 @@ fragment ListCommonFields on List {
   boardId
 }
 
-query FetchBoard($id: ID!) {
-  board(id: $id) {
+query FetchBoard($boardLink: String!) {
+  board(boardLink: $boardLink) {
     id
     name
     lists {

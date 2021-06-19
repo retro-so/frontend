@@ -8,12 +8,21 @@ import {
   useFetchBoardQuery,
 } from '../../api/graphql'
 
-type BoardId = string
+type BoardLink = string
 
-export function useBoardPageModel(boardId: BoardId) {
-  const { data, loading, error } = useFetchBoardQuery({ variables: { id: boardId } })
+export function useBoardPageModel(boardLink: BoardLink) {
+  const { data, loading, error } = useFetchBoardQuery({ variables: { boardLink } })
+  const boardId = data?.board.id || ''
 
-  useBoardUpdatedSubscription({ variables: { boardId }, onSubscriptionData })
+  useBoardUpdatedSubscription({
+    onSubscriptionData,
+    skip: loading,
+    variables: { boardId },
+  })
+
+  if (error) {
+    throw new Error(error as any)
+  }
 
   return { data, loading, error }
 }

@@ -40,16 +40,7 @@ export const BoardsPage: FC = () => {
 
   const onClick = () => {
     if (value) {
-      createBoard({
-        variables: { board: { name: value } },
-        optimisticResponse: {
-          createBoard: {
-            id: '-1',
-            __typename: 'Board',
-            name: value,
-          },
-        },
-      })
+      createBoard({ variables: { board: { name: value } } })
       setValue('')
     }
   }
@@ -60,7 +51,7 @@ export const BoardsPage: FC = () => {
       <div>
         {data?.boards.map((board) => (
           <div key={board.id}>
-            <Link to={paths.board(board.id)}>{board.name}</Link>
+            <Link to={paths.board(board.link)}>{board.name}</Link>
           </div>
         ))}
       </div>

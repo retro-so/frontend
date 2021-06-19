@@ -1,5 +1,6 @@
 fragment BoardCommonFields on Board {
   id
+  link
   name
 }
 

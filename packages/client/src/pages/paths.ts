@@ -1,7 +1,7 @@
 export const paths = {
-  board: (id = ':id') => `/${id}`,
+  board: (link = ':link') => `/${link}`,
   boards: () => '/boards',
   login: () => '/login',
 }
 
-export type BoardRouteParams = { id: string }
+export type BoardRouteParams = { link: string }
