@@ -37,6 +37,7 @@ type List {
 
 type Board {
   id: ID!
+  link: String!
   owner: User!
   name: String!
   lists: [List!]!
@@ -46,7 +47,7 @@ type Board {
 type Query {
   me: User!
   boards: [Board!]!
-  board(id: ID!): Board!
+  board(boardLink: String!): Board!
 }
 
 type Mutation {

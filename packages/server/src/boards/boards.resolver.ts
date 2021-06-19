@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common'
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
 
 import { GqlUser, AccessAuthGuard } from 'src/auth'
 import { UserEntity } from 'src/users'
@@ -19,8 +19,8 @@ export class BoardsResolver {
   }
 
   @Query(() => BoardEntity)
-  board(@Args('id', { type: () => ID }) id: string) {
-    return this.boardsService.findOneById(id)
+  board(@Args('boardLink') boardLink: string) {
+    return this.boardsService.findOneByLink(boardLink)
   }
 
   @Mutation(() => BoardEntity)

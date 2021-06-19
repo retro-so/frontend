@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
 import { UserEntity } from 'src/users'
+import { createShortLink } from 'src/libs/short-link'
 
 import { BoardEntity } from './board.entity'
 import { CreateBoardInput } from './board.input'
@@ -19,14 +20,21 @@ export class BoardsService {
     return this.boardRepo.find({ owner })
   }
 
-  findOneById(id: string) {
+  findOneByLink(link: string) {
     return this.boardRepo.findOne(
-      { id },
+      { link },
       { relations: ['owner', 'lists', 'lists.cards'] },
     )
   }
 
   createBoard(boardData: CreateBoardInput, owner: UserEntity) {
-    return this.boardRepo.save({ ...boardData, owner })
+    const shortLink = createShortLink()
+    const entity = new BoardEntity({
+      name: boardData.name,
+      link: shortLink,
+      owner,
+    })
+
+    return this.boardRepo.save(entity)
   }
 }

@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  BaseEntity,
 } from 'typeorm'
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 
@@ -14,10 +15,14 @@ import { ListEntity } from 'src/lists'
 
 @ObjectType('Board')
 @Entity('board')
-export class BoardEntity {
+export class BoardEntity extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string
+
+  @Field()
+  @Column()
+  link: string
 
   @Field(() => UserEntity)
   @ManyToOne(() => UserEntity)
@@ -35,4 +40,9 @@ export class BoardEntity {
   @Field()
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string
+
+  constructor(entity: Partial<BoardEntity>) {
+    super()
+    Object.assign(this, entity)
+  }
 }
