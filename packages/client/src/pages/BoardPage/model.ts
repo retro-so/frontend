@@ -1,10 +1,15 @@
+import { useState } from 'react'
 import { OnSubscriptionDataOptions } from '@apollo/client'
 
 import {
+  BoardActiveUsersDocument,
+  BoardActiveUsersQuery,
   BoardUpdatedSubscription,
   CardCommonFieldsFragmentDoc,
   ListCommonFieldsFragmentDoc,
+  useBoardActiveUsersQuery,
   useBoardUpdatedSubscription,
+  useConnectionUpdatedSubscription,
   useFetchBoardQuery,
 } from '../../api/graphql'
 
@@ -13,6 +18,54 @@ type BoardLink = string
 export function useBoardPageModel(boardLink: BoardLink) {
   const { data, loading, error } = useFetchBoardQuery({ variables: { boardLink } })
   const boardId = data?.board.id || ''
+  const { data: activeUsersData, loading: activeUsersLoading } = useBoardActiveUsersQuery({
+    skip: loading,
+    variables: { boardId },
+  })
+
+  const activeUsers = activeUsersData?.boardActiveUsers ?? []
+
+  useConnectionUpdatedSubscription({
+    onSubscriptionData: (options) => {
+      const { client, subscriptionData } = options
+      const event = subscriptionData.data?.connectionUpdated
+
+      switch (event?.__typename) {
+        case 'UserConnected':
+          const user = event.payload
+          const prevQuery = client.cache.readQuery<BoardActiveUsersQuery>({
+            query: BoardActiveUsersDocument,
+            variables: { boardId },
+          })
+
+          const prevBoardActiveUsers = prevQuery?.boardActiveUsers ?? []
+          const isExistsIncomingUser = prevBoardActiveUsers.some(({ id }) => id === user.id)
+
+          if (isExistsIncomingUser) {
+            return
+          }
+
+          const boardActiveUsers = [...prevBoardActiveUsers, user]
+            // Use sort for save idempotent order.
+            .sort((a, b) => a.id.localeCompare(b.id))
+
+          client.cache.writeQuery({
+            query: BoardActiveUsersDocument,
+            variables: { boardId },
+            data: { boardActiveUsers },
+          })
+          break
+        case 'UserDisconnected':
+          client.cache.evict({ id: client.cache.identify(event.payload) })
+          client.cache.gc()
+          break
+        default:
+          throw new Error('Unhandled subscription type: ' + event?.__typename)
+      }
+    },
+    skip: activeUsersLoading,
+    variables: { boardId },
+  })
 
   useBoardUpdatedSubscription({
     onSubscriptionData,
@@ -24,7 +77,8 @@ export function useBoardPageModel(boardLink: BoardLink) {
     throw new Error(error as any)
   }
 
-  return { data, loading, error }
+  // TODO: Return board instead data.
+  return { activeUsers, data, loading }
 }
 
 type Params = OnSubscriptionDataOptions<BoardUpdatedSubscription>

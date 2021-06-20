@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { useParams } from 'react-router'
 import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
@@ -9,14 +9,16 @@ import { useCreateListMutation } from '../../api/graphql'
 import { useAuthGuard } from '../../features/session'
 import { BoardRouteParams } from '../paths'
 import { useBoardPageModel } from './model'
+import { ActiveUsers } from './components/ActiveUsers'
 
 export const BoardPage: FC = () => {
   useAuthGuard()
 
   const { link } = useParams<BoardRouteParams>()
-  const { data, loading } = useBoardPageModel(link)
+  const { data, loading, activeUsers } = useBoardPageModel(link)
   const [createList] = useCreateListMutation()
 
+  // TODO: Print skeleton.
   if (loading) {
     return <div>Loading...</div>
   }
@@ -24,9 +26,11 @@ export const BoardPage: FC = () => {
   return (
     <Container>
       <Header />
-      <Text typography="headline-m">{data?.board.name}</Text>
-      <hr />
-      <div>Users: ...</div>
+      <Toolbar>
+        {/* TODO: Print board owner <owner>/<board-name> */}
+        <Text typography="headline-m">{data?.board.name}</Text>
+        <ActiveUsers users={activeUsers} />
+      </Toolbar>
       <Canvas>
         <Columns>
           {data?.board.lists.map((list) => (
@@ -52,10 +56,19 @@ const Container = styled.div`
   height: 100vh;
 `
 
+const Toolbar = styled.div`
+  display: flex;
+  gap: 16px;
+  padding: 0 16px;
+  align-items: center;
+  height: 40px;;
+`
+
 const Canvas = styled.div`
   flex: 1 1 auto;
   position: relative;
   overflow: hidden;
+  margin-top: 32px;
 `
 
 const Columns = styled.div`

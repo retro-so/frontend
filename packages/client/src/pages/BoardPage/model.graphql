@@ -32,6 +32,14 @@ query FetchBoard($boardLink: String!) {
   }
 }
 
+query BoardActiveUsers($boardId: ID!) {
+  boardActiveUsers(boardId: $boardId) {
+    id
+    avatarUrl
+    displayName
+  }
+}
+
 mutation CreateList($list: CreateListInput!) {
   createList(list: $list) {
     ...ListCommonFields
@@ -117,6 +125,23 @@ subscription BoardUpdated($boardId: ID!) {
       }
     }
     ... on ListRemoved {
+      payload {
+        id
+      }
+    }
+  }
+}
+
+subscription ConnectionUpdated($boardId: ID!) {
+  connectionUpdated(boardId: $boardId) {
+    ... on UserConnected {
+      payload {
+        id
+        avatarUrl
+        displayName
+      }
+    }
+    ... on UserDisconnected {
       payload {
         id
       }

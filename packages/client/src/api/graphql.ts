@@ -14,6 +14,13 @@ export type Scalars = {
   Float: number;
 };
 
+export type ActiveUser = {
+  __typename?: 'ActiveUser';
+  id: Scalars['ID'];
+  displayName: Scalars['String'];
+  avatarUrl: Scalars['String'];
+};
+
 export type AddCardLikeInput = {
   cardId: Scalars['ID'];
   boardId: Scalars['ID'];
@@ -67,6 +74,8 @@ export type CardUpdated = {
   __typename?: 'CardUpdated';
   payload: Card;
 };
+
+export type ConnectionUpdate = UserConnected | UserDisconnected;
 
 export type CreateBoardInput = {
   name: Scalars['String'];
@@ -176,6 +185,7 @@ export type Query = {
   me: User;
   boards: Array<Board>;
   board: Board;
+  boardActiveUsers: Array<ActiveUser>;
 };
 
 
@@ -183,13 +193,24 @@ export type QueryBoardArgs = {
   boardLink: Scalars['String'];
 };
 
+
+export type QueryBoardActiveUsersArgs = {
+  boardId: Scalars['ID'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   boardUpdated: BoardUpdated;
+  connectionUpdated: ConnectionUpdate;
 };
 
 
 export type SubscriptionBoardUpdatedArgs = {
+  boardId: Scalars['ID'];
+};
+
+
+export type SubscriptionConnectionUpdatedArgs = {
   boardId: Scalars['ID'];
 };
 
@@ -212,6 +233,16 @@ export type User = {
   displayName: Scalars['String'];
   email: Scalars['String'];
   avatarUrl: Scalars['String'];
+};
+
+export type UserConnected = {
+  __typename?: 'UserConnected';
+  payload: User;
+};
+
+export type UserDisconnected = {
+  __typename?: 'UserDisconnected';
+  payload: User;
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -261,6 +292,19 @@ export type FetchBoardQuery = (
       & ListCommonFieldsFragment
     )> }
   ) }
+);
+
+export type BoardActiveUsersQueryVariables = Exact<{
+  boardId: Scalars['ID'];
+}>;
+
+
+export type BoardActiveUsersQuery = (
+  { __typename?: 'Query' }
+  & { boardActiveUsers: Array<(
+    { __typename?: 'ActiveUser' }
+    & Pick<ActiveUser, 'id' | 'avatarUrl' | 'displayName'>
+  )> }
 );
 
 export type CreateListMutationVariables = Exact<{
@@ -419,6 +463,28 @@ export type BoardUpdatedSubscription = (
   ) }
 );
 
+export type ConnectionUpdatedSubscriptionVariables = Exact<{
+  boardId: Scalars['ID'];
+}>;
+
+
+export type ConnectionUpdatedSubscription = (
+  { __typename?: 'Subscription' }
+  & { connectionUpdated: (
+    { __typename?: 'UserConnected' }
+    & { payload: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'avatarUrl' | 'displayName'>
+    ) }
+  ) | (
+    { __typename?: 'UserDisconnected' }
+    & { payload: (
+      { __typename?: 'User' }
+      & Pick<User, 'id'>
+    ) }
+  ) }
+);
+
 export type BoardCommonFieldsFragment = (
   { __typename?: 'Board' }
   & Pick<Board, 'id' | 'link' | 'name'>
@@ -557,6 +623,43 @@ export function useFetchBoardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FetchBoardQueryHookResult = ReturnType<typeof useFetchBoardQuery>;
 export type FetchBoardLazyQueryHookResult = ReturnType<typeof useFetchBoardLazyQuery>;
 export type FetchBoardQueryResult = Apollo.QueryResult<FetchBoardQuery, FetchBoardQueryVariables>;
+export const BoardActiveUsersDocument = gql`
+    query BoardActiveUsers($boardId: ID!) {
+  boardActiveUsers(boardId: $boardId) {
+    id
+    avatarUrl
+    displayName
+  }
+}
+    `;
+
+/**
+ * __useBoardActiveUsersQuery__
+ *
+ * To run a query within a React component, call `useBoardActiveUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBoardActiveUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBoardActiveUsersQuery({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useBoardActiveUsersQuery(baseOptions: Apollo.QueryHookOptions<BoardActiveUsersQuery, BoardActiveUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BoardActiveUsersQuery, BoardActiveUsersQueryVariables>(BoardActiveUsersDocument, options);
+      }
+export function useBoardActiveUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BoardActiveUsersQuery, BoardActiveUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BoardActiveUsersQuery, BoardActiveUsersQueryVariables>(BoardActiveUsersDocument, options);
+        }
+export type BoardActiveUsersQueryHookResult = ReturnType<typeof useBoardActiveUsersQuery>;
+export type BoardActiveUsersLazyQueryHookResult = ReturnType<typeof useBoardActiveUsersLazyQuery>;
+export type BoardActiveUsersQueryResult = Apollo.QueryResult<BoardActiveUsersQuery, BoardActiveUsersQueryVariables>;
 export const CreateListDocument = gql`
     mutation CreateList($list: CreateListInput!) {
   createList(list: $list) {
@@ -890,6 +993,47 @@ export function useBoardUpdatedSubscription(baseOptions: Apollo.SubscriptionHook
       }
 export type BoardUpdatedSubscriptionHookResult = ReturnType<typeof useBoardUpdatedSubscription>;
 export type BoardUpdatedSubscriptionResult = Apollo.SubscriptionResult<BoardUpdatedSubscription>;
+export const ConnectionUpdatedDocument = gql`
+    subscription ConnectionUpdated($boardId: ID!) {
+  connectionUpdated(boardId: $boardId) {
+    ... on UserConnected {
+      payload {
+        id
+        avatarUrl
+        displayName
+      }
+    }
+    ... on UserDisconnected {
+      payload {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useConnectionUpdatedSubscription__
+ *
+ * To run a query within a React component, call `useConnectionUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useConnectionUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConnectionUpdatedSubscription({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useConnectionUpdatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<ConnectionUpdatedSubscription, ConnectionUpdatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ConnectionUpdatedSubscription, ConnectionUpdatedSubscriptionVariables>(ConnectionUpdatedDocument, options);
+      }
+export type ConnectionUpdatedSubscriptionHookResult = ReturnType<typeof useConnectionUpdatedSubscription>;
+export type ConnectionUpdatedSubscriptionResult = Apollo.SubscriptionResult<ConnectionUpdatedSubscription>;
 export const FetchBoardsDocument = gql`
     query FetchBoards {
   boards {
