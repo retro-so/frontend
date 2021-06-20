@@ -64,5 +64,5 @@ export const BoardUpdated = createUnionType({
     ListUpdated,
     ListRemoved,
   ],
-  resolveType: (value) => value.action,
+  resolveType: (type) => type.action,
 })
