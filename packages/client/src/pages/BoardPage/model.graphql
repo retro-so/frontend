@@ -23,6 +23,9 @@ query FetchBoard($boardLink: String!) {
   board(boardLink: $boardLink) {
     id
     name
+    owner {
+      displayName
+    }
     lists {
       ...ListCommonFields
       cards {

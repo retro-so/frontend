@@ -27,8 +27,7 @@ export const BoardPage: FC = () => {
     <Container>
       <Header />
       <Toolbar>
-        {/* TODO: Print board owner <owner>/<board-name> */}
-        <Text typography="headline-m">{data?.board.name}</Text>
+        <Text typography="subheader-xl">{data?.board.owner.displayName}/{data?.board.name}</Text>
         <ActiveUsers users={activeUsers} />
       </Toolbar>
       <Canvas>

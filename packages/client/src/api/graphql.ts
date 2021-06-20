@@ -237,12 +237,12 @@ export type User = {
 
 export type UserConnected = {
   __typename?: 'UserConnected';
-  payload: User;
+  payload: ActiveUser;
 };
 
 export type UserDisconnected = {
   __typename?: 'UserDisconnected';
-  payload: User;
+  payload: ActiveUser;
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -283,7 +283,10 @@ export type FetchBoardQuery = (
   & { board: (
     { __typename?: 'Board' }
     & Pick<Board, 'id' | 'name'>
-    & { lists: Array<(
+    & { owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'displayName'>
+    ), lists: Array<(
       { __typename?: 'List' }
       & { cards: Array<(
         { __typename?: 'Card' }
@@ -473,14 +476,14 @@ export type ConnectionUpdatedSubscription = (
   & { connectionUpdated: (
     { __typename?: 'UserConnected' }
     & { payload: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'avatarUrl' | 'displayName'>
+      { __typename?: 'ActiveUser' }
+      & Pick<ActiveUser, 'id' | 'avatarUrl' | 'displayName'>
     ) }
   ) | (
     { __typename?: 'UserDisconnected' }
     & { payload: (
-      { __typename?: 'User' }
-      & Pick<User, 'id'>
+      { __typename?: 'ActiveUser' }
+      & Pick<ActiveUser, 'id'>
     ) }
   ) }
 );
@@ -585,6 +588,9 @@ export const FetchBoardDocument = gql`
   board(boardLink: $boardLink) {
     id
     name
+    owner {
+      displayName
+    }
     lists {
       ...ListCommonFields
       cards {
