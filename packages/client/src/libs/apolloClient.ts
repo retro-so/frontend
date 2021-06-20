@@ -3,6 +3,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { onError } from '@apollo/client/link/error'
 import { HttpLink } from '@apollo/client/link/http'
 import { WebSocketLink } from '@apollo/client/link/ws'
+import { RetryLink } from '@apollo/client/link/retry'
 
 export function createApolloClient() {
   // TODO: Generate types for cache.
@@ -45,6 +46,18 @@ export function createApolloClient() {
     },
   })
 
+  const retryLink = new RetryLink({
+    delay: {
+      initial: 300,
+      max: 2000,
+      jitter: true,
+    },
+    attempts: {
+      max: 3,
+      retryIf: (error) => error && error.statusCode >= 500,
+    },
+  })
+
   // Use ws link only for updates from server.
   const requestLink = split(
     ({ query }) => {
@@ -55,7 +68,7 @@ export function createApolloClient() {
     httpLink,
   )
 
-  const client = new ApolloClient({ link: from([errorLink, requestLink]), cache })
+  const client = new ApolloClient({ link: from([errorLink, retryLink, requestLink]), cache })
 
   return client
 }
