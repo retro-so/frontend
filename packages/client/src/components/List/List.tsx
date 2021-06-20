@@ -89,6 +89,7 @@ export const List: FC<ListProps> = (props) => {
             <span onClick={onStartEdit} onFocus={onStartEdit} tabIndex={0}>
               <Text typography="headline-xs" as="h2" color="secondary">
                 {name}
+                <Counter>{cards.length}</Counter>
               </Text>
             </span>
           )}
@@ -155,6 +156,17 @@ const Header = styled.div`
     line-height: var(--text-headline-size-xs-line-height);
     letter-spacing: var(--text-headline-size-xs-letter-spacing);
   }
+`
+
+const Counter = styled.span`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 24px;
+  margin-left: 8px;
+  border-radius: 8px;
+  background-color: #EAECF0;
+  font-size: 90%;
 `
 
 const Cards = styled.div`
