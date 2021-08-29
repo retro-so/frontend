@@ -27,7 +27,9 @@ export const BoardPage: FC = () => {
     <Container>
       <Header />
       <Toolbar>
-        <Text typography="subheader-xl">{data?.board.owner.displayName}/{data?.board.name}</Text>
+        <Text typography="subheader-xl">
+          {data?.board.owner.displayName}/{data?.board.name}
+        </Text>
         <ActiveUsers users={activeUsers} />
       </Toolbar>
       <Canvas>
@@ -60,7 +62,7 @@ const Toolbar = styled.div`
   gap: 16px;
   padding: 0 16px;
   align-items: center;
-  height: 40px;;
+  height: 40px;
 `
 
 const Canvas = styled.div`
