@@ -7,7 +7,6 @@ import {
   OneToMany,
   BaseEntity,
 } from 'typeorm'
-import { Field, ObjectType, ID } from '@nestjs/graphql'
 
 import { UserEntity } from 'src/users'
 import { ListEntity } from 'src/lists'
@@ -16,14 +15,11 @@ import { LikeEntity } from './LikeEntity'
 
 export type CardId = string
 
-@ObjectType('Card')
 @Entity('card')
 export class CardEntity extends BaseEntity {
-  @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: CardId
 
-  @Field()
   @Column({ default: 0 })
   index: number
 
@@ -31,7 +27,6 @@ export class CardEntity extends BaseEntity {
   @JoinColumn({ name: 'list_id' })
   list: ListEntity // Use this field only for join relations.
 
-  @Field()
   @Column({ name: 'list_id', type: 'uuid' })
   listId: string
 
@@ -39,24 +34,19 @@ export class CardEntity extends BaseEntity {
   @JoinColumn({ name: 'board_id' })
   board: BoardEntity // Use this field only for join relations.
 
-  @Field(() => ID)
   @Column({ name: 'board_id', type: 'uuid' })
   boardId: string
 
-  @Field()
   @Column()
   content: string
 
-  @Field(() => UserEntity)
   @ManyToOne(() => UserEntity, { eager: true }) // Use eager for load relations.
   @JoinColumn({ name: 'author_id' })
   author: UserEntity
 
-  @Field()
   @Column({ default: false })
   solved: boolean
 
-  @Field(() => [LikeEntity])
   @OneToMany(() => LikeEntity, (like) => like.card, { eager: true }) // Use eager for load relations.
   likes: LikeEntity[]
 

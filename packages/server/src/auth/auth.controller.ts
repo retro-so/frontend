@@ -1,11 +1,12 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Request, Response } from 'express'
-
 import { UserEntity } from 'src/users'
+
 import { User } from './user.decorator'
 import { Meta } from './meta.decorator'
 import { AuthService } from './auth.service'
+import { HttpAuthGuard } from './http-auth.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -45,7 +46,7 @@ export class AuthController {
       .end()
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(HttpAuthGuard)
   @Get('me')
   me(@User() user: UserEntity) {
     return user
