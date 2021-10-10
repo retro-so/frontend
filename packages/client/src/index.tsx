@@ -1,32 +1,29 @@
 import { Suspense } from 'react'
 import { Router } from 'react-router'
 import { render } from 'react-dom'
-import { ApolloProvider } from '@apollo/client'
 
 import { Pages } from './pages'
 import { GlobalStyles } from './GlobalStyles'
 import reportWebVitals from './reportWebVitals'
 import { history } from './libs/history'
-import { loadSession } from './features/session'
 import { LegoThemeProvider } from './components/LegoThemeProvider'
 import { PageLoading } from './components/PageLoading'
-import { createApolloClient } from './libs/apolloClient'
+import { createSocketConnection } from './libs/socket'
+import { loadSession } from './features/session'
 
-const apolloClient = createApolloClient()
+createSocketConnection()
 
-loadSession(apolloClient).then(() => {
+loadSession(() => {
   render(
     <>
       <GlobalStyles />
-      <ApolloProvider client={apolloClient}>
-        <LegoThemeProvider>
-          <Router history={history}>
-            <Suspense fallback={<PageLoading />}>
-              <Pages />
-            </Suspense>
-          </Router>
-        </LegoThemeProvider>
-      </ApolloProvider>
+      <LegoThemeProvider>
+        <Router history={history}>
+          <Suspense fallback={<PageLoading />}>
+            <Pages />
+          </Suspense>
+        </Router>
+      </LegoThemeProvider>
     </>,
     document.getElementById('root'),
   )

@@ -2,24 +2,32 @@ import { FC } from 'react'
 import { useParams } from 'react-router'
 import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
+import { useGate, useStore, useStoreMap } from 'effector-react'
 
 import { Header } from '../../components/Header'
 import { List } from '../../components/List'
-import { useCreateListMutation } from '../../api/graphql'
-import { useAuthGuard } from '../../features/session'
+import { withAuth } from '../../features/session'
 import { BoardRouteParams } from '../paths'
-import { useBoardPageModel } from './model'
 import { ActiveUsers } from './components/ActiveUsers'
+import { BoardPageGate, createList, $board, $activeUsers, $isLoading, $lists } from './model'
 
-export const BoardPage: FC = () => {
-  useAuthGuard()
-
+export const BoardPage: FC = withAuth(() => {
   const { link } = useParams<BoardRouteParams>()
-  const { data, loading, activeUsers } = useBoardPageModel(link)
-  const [createList] = useCreateListMutation()
+
+  useGate(BoardPageGate, link)
+
+  const board = useStore($board)
+  const activeUsers = useStore($activeUsers)
+  const isLoading = useStore($isLoading)
+
+  const lists = useStoreMap({
+    store: $lists,
+    keys: [link],
+    fn: (lists) => Object.values(lists),
+  })
 
   // TODO: Print skeleton.
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>
   }
 
@@ -28,28 +36,23 @@ export const BoardPage: FC = () => {
       <Header />
       <Toolbar>
         <Text typography="subheader-xl">
-          {data?.board.owner.displayName}/{data?.board.name}
+          {board.owner.displayName}/{board.name}
         </Text>
         <ActiveUsers users={activeUsers} />
       </Toolbar>
       <Canvas>
         <Columns>
-          {data?.board.lists.map((list) => (
-            // @ts-expect-error
-            <List {...list} boardId={data!.board.id} key={list.id} />
+          {lists.map((list) => (
+            <List id={list.id} name={list.name} boardId={list.boardId} key={list.id} />
           ))}
-          <button
-            onClick={() => {
-              createList({ variables: { list: { name: '<List name>', boardId: data!.board.id } } })
-            }}
-          >
+          <button onClick={() => createList({ name: '<List name>', boardId: board.id })}>
             Create column
           </button>
         </Columns>
       </Canvas>
     </Container>
   )
-}
+})
 
 const Container = styled.div`
   display: flex;

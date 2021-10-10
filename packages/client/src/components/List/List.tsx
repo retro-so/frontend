@@ -11,30 +11,31 @@ import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
+import { useStoreMap } from 'effector-react'
 
-import {
-  List as ListType,
-  useCreateCardMutation,
-  useRemoveListMutation,
-  useUpdateListMutation,
-} from '../../api/graphql'
 import { DropdownMenu } from './DropdownMenu'
 import { Card, EditableCard } from '../Card'
 import { PlusIcon } from '../Icons/PlusIcon'
+import { $cards, createCard, updateList, deleteList } from '../../pages/BoardPage/model'
 
-type ListProps = ListType & {
+type ListProps = {
+  id: string
+  name: string
   boardId: string
 }
 
 export const List: FC<ListProps> = (props) => {
-  const { id, name, cards, boardId } = props
+  const { id, name, boardId } = props
 
   const [isEditMode, setEditMode] = useState(false)
   const cardsRef = useRef<HTMLDivElement>(null)
   const [isCreatorMode, setCreatorMode] = useState(false)
-  const [createCard] = useCreateCardMutation()
-  const [updateList] = useUpdateListMutation()
-  const [removeList] = useRemoveListMutation()
+
+  const cards = useStoreMap({
+    store: $cards,
+    keys: [id],
+    fn: (cards, [listId]) => Object.values(cards).filter((card: any) => card.listId === listId),
+  })
 
   useEffect(() => {
     if (isCreatorMode) {
@@ -43,7 +44,7 @@ export const List: FC<ListProps> = (props) => {
   }, [isCreatorMode])
 
   const onAction = (content: string) => {
-    createCard({ variables: { card: { listId: id, boardId, content } } })
+    createCard({ listId: id, boardId, content })
     setCreatorMode(false)
   }
 
@@ -61,14 +62,14 @@ export const List: FC<ListProps> = (props) => {
 
     if (shouldApplyChanges) {
       const baseEvent = event as BaseSyntheticEvent
-      updateList({ variables: { list: { id, name: baseEvent.target.value } } })
+      updateList({ id, name: baseEvent.target.value })
       setEditMode(false)
     }
   }
 
   const onDelete = () => {
     if (window.confirm('Delete this list?')) {
-      removeList({ variables: { listId: id } })
+      deleteList(id)
     }
   }
 
@@ -165,7 +166,7 @@ const Counter = styled.span`
   min-width: 24px;
   margin-left: 8px;
   border-radius: 8px;
-  background-color: #EAECF0;
+  background-color: #eaecf0;
   font-size: 90%;
 `
 

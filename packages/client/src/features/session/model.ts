@@ -1,19 +1,21 @@
-import { ApolloClient } from '@apollo/client'
+import { createStore, createEffect, restore } from 'effector'
+import { useStore } from 'effector-react'
 
-import { MeDocument, MeQuery, useMeQuery } from '../../api/graphql'
+import { api } from '../../api'
+import type { User } from '../../api'
 
-export async function loadSession(client: ApolloClient<{}>) {
-  try {
-    const result = await client.query<MeQuery>({ query: MeDocument })
+const fetchSessionFx = createEffect(api.fetchMe)
 
-    if (result.data.me) {
-      return Promise.resolve()
-    }
-  } catch (_error) {}
+export const $session = createStore<User | null>(null)
+export const $isLoading = restore(fetchSessionFx.pending.updates, true)
+
+$session.on(fetchSessionFx.doneData, (_, result) => result)
+
+export function loadSession(fn: () => void) {
+  fetchSessionFx.done.watch(fn)
+  fetchSessionFx()
 }
 
-export function useSessionUser() {
-  const { data } = useMeQuery()
-
-  return data!.me
+export function useUser(): User {
+  return useStore($session)!
 }

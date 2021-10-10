@@ -11,8 +11,8 @@ export const ActiveUsers: FC<ActiveUsersProps> = (props) => {
 
   return (
     <Container>
-      {users.map((user) => (
-        <Avatar key={user.id} src={user.avatarUrl} />
+      {users.map((user, index) => (
+        <Avatar key={index} src={user.avatarUrl} />
       ))}
     </Container>
   )

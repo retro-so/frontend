@@ -2,10 +2,10 @@ import { FC } from 'react'
 import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 
-import { useSessionUser } from '../features/session'
+import { useUser } from '../features/session'
 
 export const User: FC = () => {
-  const { avatarUrl, displayName } = useSessionUser()
+  const { avatarUrl, displayName } = useUser()
 
   return (
     <Container>

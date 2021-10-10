@@ -1,46 +1,29 @@
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useGate, useStore } from 'effector-react'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
 
-import {
-  FetchBoardsQuery,
-  FetchBoardsDocument,
-  useFetchBoardsQuery,
-  useCreateBoardMutation,
-} from '../../api/graphql'
-import { useAuthGuard } from '../../features/session'
+import { withAuth } from '../../features/session'
 import { paths } from '../paths'
+import { BoardsPageGate, createBoard, $boards, $isLoading } from './model'
 
-export const BoardsPage: FC = () => {
-  useAuthGuard()
-  const { data, loading } = useFetchBoardsQuery()
+export const BoardsPage: FC = withAuth(() => {
+  useGate(BoardsPageGate)
 
-  const [createBoard] = useCreateBoardMutation({
-    update: (cache, result) => {
-      const data = cache.readQuery<FetchBoardsQuery>({ query: FetchBoardsDocument })
-
-      if (data?.boards && result.data) {
-        const nextBoards = data.boards.concat(result.data?.createBoard)
-
-        cache.writeQuery<FetchBoardsQuery>({
-          query: FetchBoardsDocument,
-          data: { boards: nextBoards },
-        })
-      }
-    },
-  })
+  const boards = useStore($boards)
+  const isLoading = useStore($isLoading)
 
   const [value, setValue] = useState('')
 
-  if (loading) {
+  if (isLoading) {
     return <>Loading...</>
   }
 
   const onClick = () => {
     if (value) {
-      createBoard({ variables: { board: { name: value } } })
+      createBoard({ name: value })
       setValue('')
     }
   }
@@ -49,7 +32,7 @@ export const BoardsPage: FC = () => {
     <div>
       <Text typography="headline-m">All boards</Text>
       <div>
-        {data?.boards.map((board) => (
+        {boards.map((board: any) => (
           <div key={board.id}>
             <Link to={paths.board(board.link)}>{board.name}</Link>
           </div>
@@ -69,4 +52,4 @@ export const BoardsPage: FC = () => {
       </div>
     </div>
   )
-}
+})

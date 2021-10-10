@@ -4,12 +4,10 @@ import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
 
 import { Flex } from '../../components/Flex'
-import { useAnonymousGuard } from '../../features/session'
+import { withAnon } from '../../features/session'
 import background from './background.svg'
 
-export const LoginPage: FC = () => {
-  useAnonymousGuard()
-
+export const LoginPage: FC = withAnon(() => {
   return (
     <Container>
       <Side>
@@ -33,7 +31,7 @@ export const LoginPage: FC = () => {
       </Side>
     </Container>
   )
-}
+})
 
 const Container = styled.div`
   display: flex;

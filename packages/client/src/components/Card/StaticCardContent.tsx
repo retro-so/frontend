@@ -3,10 +3,10 @@ import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 
-import { Card as CardType } from '../../api/graphql'
 import { LikeOutlineIcon } from '../Icons/LikeOutlineIcon'
 import { LikeFillIcon } from '../Icons/LikeFillIcon'
 
+type CardType = any
 type StaticCardContentProps = Pick<CardType, 'author' | 'content'> & {
   isLiked: boolean
   totalLikes: number

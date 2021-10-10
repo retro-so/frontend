@@ -4,34 +4,25 @@ import styled from '@emotion/styled'
 import { EditableCardContent } from './EditableCardContent'
 import { StaticCardContent } from './StaticCardContent'
 import { DropdownMenu } from './DropdownMenu'
-import {
-  Card as CardType,
-  useAddCardLikeMutation,
-  useRemoveCardLikeMutation,
-  useRemoveCardMutation,
-  useUpdateCardMutation,
-} from '../../api/graphql'
-import { useSessionUser } from '../../features/session'
+import { useUser } from '../../features/session'
+import { deleteCard, updateCard } from '../../pages/BoardPage/model'
 
-type CardProps = CardType
+type CardProps = any
 
 export const Card: FC<CardProps> = (props) => {
   const { id, content, author, solved, likes, boardId } = props
   const [isEditMode, setEditMode] = useState(false)
-  const user = useSessionUser()
+  const user = useUser()
 
   const totalLikes = likes.length
-  const isLiked = likes.some((like) => like.authorId === user.id)
+  const isLiked = likes.some((like: any) => like.authorId === user.id)
 
-  const [updateCard] = useUpdateCardMutation()
-  const [removeCard] = useRemoveCardMutation()
-
-  const [addCardLike] = useAddCardLikeMutation()
-  const [removeCardLike] = useRemoveCardLikeMutation()
+  // const [addCardLike] = useAddCardLikeMutation()
+  // const [removeCardLike] = useRemoveCardLikeMutation()
 
   const onDeleteAction = () => {
     if (window.confirm('Delete this card?')) {
-      removeCard({ variables: { id } })
+      deleteCard(id)
     }
   }
 
@@ -40,19 +31,19 @@ export const Card: FC<CardProps> = (props) => {
   }
 
   const onSolveAction = () => {
-    updateCard({ variables: { card: { id, solved: !solved } } })
+    updateCard({ id, solved: !solved })
   }
 
   const onUpdateCard = (content: string) => {
-    updateCard({ variables: { card: { id, content } } })
+    updateCard({ id, content })
     setEditMode(false)
   }
 
   const onToggleLike = () => {
     if (isLiked) {
-      removeCardLike({ variables: { cardId: id } })
+      // removeCardLike({ variables: { cardId: id } })
     } else {
-      addCardLike({ variables: { like: { boardId, cardId: id } } })
+      // addCardLike({ variables: { like: { boardId, cardId: id } } })
     }
   }
 
