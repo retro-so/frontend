@@ -16,7 +16,7 @@ import { useStoreMap } from 'effector-react'
 import { DropdownMenu } from './DropdownMenu'
 import { Card, EditableCard } from '../Card'
 import { PlusIcon } from '../Icons/PlusIcon'
-import { $cards, createCard, updateList, deleteList } from '../../pages/BoardPage/model'
+import { $cards, createCard, updateList, deleteList } from '../../pages/board/model'
 
 type ListProps = {
   id: string

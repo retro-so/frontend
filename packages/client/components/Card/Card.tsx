@@ -5,7 +5,7 @@ import { EditableCardContent } from './EditableCardContent'
 import { StaticCardContent } from './StaticCardContent'
 import { DropdownMenu } from './DropdownMenu'
 import { useUser } from '../../features/session'
-import { deleteCard, updateCard } from '../../pages/BoardPage/model'
+import { deleteCard, updateCard } from '../../pages/board/model'
 
 type CardProps = any
 

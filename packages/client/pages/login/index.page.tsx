@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import type { NextPage } from 'next'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
@@ -7,7 +7,7 @@ import { Flex } from '../../components/Flex'
 import { withAnon } from '../../features/session'
 import background from './background.svg'
 
-export const LoginPage: FC = withAnon(() => {
+const LoginPage: NextPage = withAnon(() => {
   return (
     <Container>
       <Side>
@@ -33,6 +33,8 @@ export const LoginPage: FC = withAnon(() => {
   )
 })
 
+export default LoginPage
+
 const Container = styled.div`
   display: flex;
   height: 100vh;
@@ -50,7 +52,7 @@ const Side = styled.div`
 const Placeholder = styled.div`
   width: 100%;
   height: 100%;
-  background-image: url(${background});
+  background-image: url(${background.src});
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

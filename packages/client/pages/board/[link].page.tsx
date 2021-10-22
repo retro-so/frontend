@@ -1,5 +1,6 @@
-import { FC } from 'react'
-import { useParams } from 'react-router'
+import { FC, useMemo } from 'react'
+import { useRouter } from 'next/router'
+// import { useParams } from 'react-router'
 import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
 import { useGate, useStore, useStoreMap } from 'effector-react'
@@ -7,12 +8,16 @@ import { useGate, useStore, useStoreMap } from 'effector-react'
 import { Header } from '../../components/Header'
 import { List } from '../../components/List'
 import { withAuth } from '../../features/session'
-import { BoardRouteParams } from '../paths'
 import { ActiveUsers } from './components/ActiveUsers'
 import { BoardPageGate, createList, $board, $activeUsers, $isLoading, $lists } from './model'
 
-export const BoardPage: FC = withAuth(() => {
-  const { link } = useParams<BoardRouteParams>()
+const BoardPage: FC = withAuth(() => {
+  const router = useRouter()
+  const link = router.query.link as string
+
+  // if (!router.isReady) {
+  //   return null
+  // }
 
   useGate(BoardPageGate, link)
 
@@ -53,6 +58,8 @@ export const BoardPage: FC = withAuth(() => {
     </Container>
   )
 })
+
+export default BoardPage
 
 const Container = styled.div`
   display: flex;

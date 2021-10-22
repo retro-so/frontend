@@ -1,8 +1,8 @@
 import { ComponentType, FC, useEffect } from 'react'
 import { useStore } from 'effector-react'
+import { useRouter } from 'next/router'
 
-import { history } from '../../libs/history'
-import { paths } from '../../pages/paths'
+import { paths } from '../../libs/paths'
 import { $session, $isLoading } from './model'
 
 type GuardType = 'auth' | 'anon'
@@ -10,14 +10,15 @@ type GuardType = 'auth' | 'anon'
 export function withGuard<T>(type: GuardType) {
   return (WrappedComponent: ComponentType<T>) => {
     const WithAnon: FC<T> = (props) => {
+      const router = useRouter()
       const session = useStore($session)
       const isLoading = useStore($isLoading)
 
       useEffect(() => {
         if (type === 'auth' && !session) {
-          history.push(paths.login())
+          router.push(paths.login())
         } else if (type === 'anon' && session) {
-          history.push(paths.boards())
+          router.push(paths.boards())
         }
       }, [session])
 

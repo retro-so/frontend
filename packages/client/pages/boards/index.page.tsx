@@ -1,15 +1,16 @@
-import { FC, useState } from 'react'
-import { Link } from 'react-router-dom'
+import type { NextPage } from 'next'
+import Link from 'next/link'
+import { useState } from 'react'
 import { useGate, useStore } from 'effector-react'
 import { Text } from '@yandex/ui/Text/bundle'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
 
 import { withAuth } from '../../features/session'
-import { paths } from '../paths'
+import { paths } from '../../libs/paths'
 import { BoardsPageGate, createBoard, $boards, $isLoading } from './model'
 
-export const BoardsPage: FC = withAuth(() => {
+const BoardsPage: NextPage = withAuth(() => {
   useGate(BoardsPageGate)
 
   const boards = useStore($boards)
@@ -34,7 +35,7 @@ export const BoardsPage: FC = withAuth(() => {
       <div>
         {boards.map((board: any) => (
           <div key={board.id}>
-            <Link to={paths.board(board.link)}>{board.name}</Link>
+            <Link href={paths.board(board.link)}>{board.name}</Link>
           </div>
         ))}
       </div>
@@ -53,3 +54,5 @@ export const BoardsPage: FC = withAuth(() => {
     </div>
   )
 })
+
+export default BoardsPage
