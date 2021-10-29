@@ -14,6 +14,7 @@
     "@bem-react/di": "3.1.1",
     "@emotion/react": "11.5.0",
     "@emotion/styled": "11.3.0",
+    "@steely/react": "0.4.1",
     "@yandex/ui": "3.23.1",
     "effector": "22.1.2",
     "effector-react": "22.0.4",
@@ -25,6 +26,7 @@
     "socket.io-client": "4.3.2"
   },
   "devDependencies": {
+    "@steely/babel-plugin": "0.4.2",
     "@types/react": "17.0.31",
     "eslint": "8.0.1",
     "eslint-config-next": "11.1.2",
