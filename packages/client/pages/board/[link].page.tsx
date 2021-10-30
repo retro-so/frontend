@@ -1,9 +1,8 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import { useRouter } from 'next/router'
-// import { useParams } from 'react-router'
 import { Text } from '@yandex/ui/Text/bundle'
-import styled from '@emotion/styled'
 import { useGate, useStore, useStoreMap } from 'effector-react'
+import { component, css } from '@steely/react'
 
 import { Header } from '../../components/Header'
 import { List } from '../../components/List'
@@ -14,10 +13,6 @@ import { BoardPageGate, createList, $board, $activeUsers, $isLoading, $lists } f
 const BoardPage: FC = withAuth(() => {
   const router = useRouter()
   const link = router.query.link as string
-
-  // if (!router.isReady) {
-  //   return null
-  // }
 
   useGate(BoardPageGate, link)
 
@@ -40,7 +35,7 @@ const BoardPage: FC = withAuth(() => {
     <Container>
       <Header />
       <Toolbar>
-        <Text typography="subheader-xl">
+        <Text typography="headline-m" weight="bold">
           {board.owner.displayName}/{board.name}
         </Text>
         <ActiveUsers users={activeUsers} />
@@ -61,46 +56,53 @@ const BoardPage: FC = withAuth(() => {
 
 export default BoardPage
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-`
+const Container = component('div', {
+  styles: css`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  `,
+})
 
-const Toolbar = styled.div`
-  display: flex;
-  gap: 16px;
-  padding: 0 16px;
-  align-items: center;
-  height: 40px;
-`
+const Toolbar = component('div', {
+  styles: css`
+    display: flex;
+    gap: 16px;
+    padding: 24px;
+    align-items: center;
+    height: 40px;
+  `,
+})
 
-const Canvas = styled.div`
-  flex: 1 1 auto;
-  position: relative;
-  overflow: hidden;
-  margin-top: 32px;
-`
+const Canvas = component('div', {
+  styles: css`
+    flex: 1 1 auto;
+    position: relative;
+    overflow: hidden;
+  `,
+})
 
-const Columns = styled.div`
-  display: flex;
-  align-items: flex-start;
-  padding: 0 16px;
-  overflow-x: scroll;
-  height: 100%;
+const Columns = component('div', {
+  styles: css`
+    display: flex;
+    align-items: flex-start;
+    padding: 0 16px;
+    overflow-x: scroll;
+    height: 100%;
 
-  &::after {
-    content: '';
-    width: 16px;
-    height: 1px;
-    display: table;
-  }
+    &::after {
+      content: '';
+      width: 16px;
+      height: 1px;
+      display: table;
+    }
 
-  > * {
-    margin-right: 16px;
-  }
+    > * {
+      margin-right: 16px;
+    }
 
-  > :last-of-type {
-    margin-right: 0;
-  }
-`
+    > :last-of-type {
+      margin-right: 0;
+    }
+  `,
+})
