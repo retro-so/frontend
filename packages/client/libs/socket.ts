@@ -13,7 +13,9 @@ export function createSocketConnection(): Socket {
 }
 
 export function getSocketConnection(): Socket {
-  // TODO: Return ensure connection
-  // @ts-expect-error
+  if (!socket) {
+    socket = createSocketConnection()
+  }
+
   return socket
 }
