@@ -1,8 +1,8 @@
 import { FC } from 'react'
 
-import { SvgIcon, SvgIconProps } from '../SvgIcon'
+import { SvgIcon, SvgIconProps } from '../components/svg-icon'
 
-export const LikeOutlineIcon: FC<SvgIconProps> = (props) => (
+export const LikeOutline: FC<SvgIconProps> = (props) => (
   <SvgIcon {...props}>
     <path
       fillRule="evenodd"

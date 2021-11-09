@@ -1,8 +1,8 @@
 import { FC } from 'react'
 import { component, css } from '@steely/react'
 
-import { User } from './User'
-import { Logo } from './Logo'
+import { User } from '../../entities/user'
+import { Logo } from '../../shared/components'
 
 export const Header: FC = () => {
   return (

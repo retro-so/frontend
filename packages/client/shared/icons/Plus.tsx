@@ -1,8 +1,8 @@
 import { FC } from 'react'
 
-import { SvgIcon, SvgIconProps } from '../SvgIcon'
+import { SvgIcon, SvgIconProps } from '../components/svg-icon'
 
-export const PlusIcon: FC<SvgIconProps> = (props) => (
+export const Plus: FC<SvgIconProps> = (props) => (
   <SvgIcon {...props}>
     <path
       d="M8 0.00268555C7.44772 0.00268555 7 0.450401 7 1.00269V7.00269H1C0.447715 7.00269 0 7.4504 0 8.00269C0 8.55497 0.447715 9.00269 1 9.00269H7V15.0026C7 15.5549 7.44772 16.0026 8 16.0026C8.55229 16.0026 9 15.5549 9 15.0026V9.00269H15C15.5523 9.00269 16 8.55497 16 8.00269C16 7.4504 15.5523 7.00269 15 7.00269H9V1.00269C9 0.450401 8.55229 0.00268555 8 0.00268555Z"

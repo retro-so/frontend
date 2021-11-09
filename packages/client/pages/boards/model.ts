@@ -1,7 +1,7 @@
 import { createStore, createEffect, forward, restore, createEvent } from 'effector'
 import { createGate } from 'effector-react'
 
-import { api } from '../../api'
+import { api } from '../../shared/api'
 
 export const createBoard = createEvent<any>()
 

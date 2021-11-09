@@ -10,6 +10,9 @@ type FlexProps = {
   height?: string
 }
 
+/**
+ * @deprecated
+ */
 export const Flex: FC<FlexProps> = (props) => {
   const { children, gap, direction, justifyContent, alignItems, as, height } = props
 

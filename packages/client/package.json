@@ -23,7 +23,8 @@
     "normalizr": "3.6.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "socket.io-client": "4.3.2"
+    "socket.io-client": "4.3.2",
+    "web-platform-alpha": "0.0.1-alpha.16"
   },
   "devDependencies": {
     "@steely/babel-plugin": "0.4.2",

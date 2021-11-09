@@ -4607,6 +4607,13 @@ web-platform-alpha@0.0.1-alpha.13:
   dependencies:
     date-fns "^2.22.1"
 
+web-platform-alpha@0.0.1-alpha.16:
+  version "0.0.1-alpha.16"
+  resolved "https://registry.yarnpkg.com/web-platform-alpha/-/web-platform-alpha-0.0.1-alpha.16.tgz#336b1591e663f9722cf3e29ca12ef42bd7d89b7e"
+  integrity sha512-7X+YyiKTzb7yd/zJAtT8CHbafNeZAo1bWXVQq6PTcowC3yPKzgPCIy0lPkjBsK/FBnCUoWN4WFY3khQs2iZnvg==
+  dependencies:
+    date-fns "^2.22.1"
+
 webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"

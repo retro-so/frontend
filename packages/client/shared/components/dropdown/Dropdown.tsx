@@ -12,10 +12,11 @@ import { Popup } from '@yandex/ui/Popup/desktop/bundle'
 
 interface DropdownProps {
   useLegacyRef?: boolean
+  onChangeVisible?: (isVisible: boolean) => void
 }
 
 export const Dropdown: FC<DropdownProps> = (props) => {
-  const { children, useLegacyRef } = props
+  const { children, useLegacyRef, onChangeVisible } = props
 
   const [isVisible, setVisible] = useState(false)
   const triggerRef = useRef<HTMLElement>(null)
@@ -30,6 +31,7 @@ export const Dropdown: FC<DropdownProps> = (props) => {
   useEffect(() => {
     const onDocumentClick = () => {
       setVisible(false)
+      onChangeVisible?.(false)
     }
 
     document.addEventListener('click', onDocumentClick, true)
@@ -41,10 +43,12 @@ export const Dropdown: FC<DropdownProps> = (props) => {
 
   const onClick = () => {
     setVisible(!isVisible)
+    onChangeVisible?.(!isVisible)
   }
 
   const onClose = () => {
     setVisible(false)
+    onChangeVisible?.(false)
   }
 
   if (isValidElement(trigger)) {

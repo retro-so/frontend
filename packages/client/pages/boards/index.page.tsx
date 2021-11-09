@@ -7,7 +7,8 @@ import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
 
 import { withAuth } from '../../features/session'
-import { paths } from '../../libs/paths'
+import { paths } from '../../shared/libs/paths'
+import { Header } from '../../widgets/header'
 import { BoardsPageGate, createBoard, $boards, $isLoading } from './model'
 
 const BoardsPage: NextPage = withAuth(() => {
@@ -31,6 +32,7 @@ const BoardsPage: NextPage = withAuth(() => {
 
   return (
     <div>
+      <Header />
       <Text typography="headline-m">All boards</Text>
       <div>
         {boards.map((board: any) => (

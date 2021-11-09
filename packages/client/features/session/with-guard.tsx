@@ -2,7 +2,7 @@ import { ComponentType, FC, useEffect } from 'react'
 import { useStore } from 'effector-react'
 import { useRouter } from 'next/router'
 
-import { paths } from '../../libs/paths'
+import { paths } from '../../shared/libs/paths'
 import { $session, $isLoading } from './model'
 
 type GuardType = 'auth' | 'anon'

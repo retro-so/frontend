@@ -1,10 +1,8 @@
 import { FC, useEffect, useRef, useState } from 'react'
-import styled from '@emotion/styled'
-import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { TextareaWithAutoResize as Textarea } from '@yandex/ui/Textarea/desktop/bundle'
+import { component, css } from '@steely/react'
 
-import { PlusIcon } from '../Icons/PlusIcon'
-import { CloseIcon } from '../Icons/CloseIcon'
+import { Button } from '../../shared/components/button'
 
 type EditableCardContentProps = {
   variant: 'create' | 'update'
@@ -20,7 +18,7 @@ export const EditableCardContent: FC<EditableCardContentProps> = (props) => {
   const controlRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    const control = controlRef.current;
+    const control = controlRef.current
 
     if (control) {
       control.focus()
@@ -37,33 +35,37 @@ export const EditableCardContent: FC<EditableCardContentProps> = (props) => {
         placeholder="Type..."
       />
       <Actions>
-        <Button view="action" size="s" onClick={() => onAction(content)}>
-          {/* TODO: Use CheckIcon for update. */}
-          <PlusIcon />
-          {variant === 'create' ? 'Create' : 'Update'}
-        </Button>
-        <Button view="clear" size="s" onClick={() => onCancel()}>
-          <CloseIcon />
+        <Button size="s" kind="default" shape="text" onClick={() => onCancel()}>
           Cancel
+        </Button>
+        <Button size="s" kind="action" shape="fill" onClick={() => onAction(content)}>
+          {variant === 'create' ? 'Create' : 'Update'}
         </Button>
       </Actions>
     </Container>
   )
 }
 
-const Container = styled.div`
-  .Textarea-Control {
-    padding: 0;
-    border: 0;
-    font-family: var(--text-body-long-size-m-font-family);
-    font-size: var(--text-body-long-size-m-font-size);
-    line-height: var(--text-body-long-size-m-line-height);
-    letter-spacing: var(--text-body-long-size-m-letter-spacing);
-  }
-`
+const Container = component('div', {
+  styles: css`
+    .Textarea-Control {
+      padding: 0;
+      border: 0;
+      font-family: var(--text-body-long-size-m-font-family);
+      font-size: var(--text-body-long-size-m-font-size);
+      line-height: var(--text-body-long-size-m-line-height);
+      letter-spacing: var(--text-body-long-size-m-letter-spacing);
+    }
+  `,
+})
 
-const Actions = styled.div`
-  .Button2 + .Button2 {
-    margin-left: 8px;
-  }
-`
+const Actions = component('div', {
+  styles: css`
+    display: flex;
+    justify-content: flex-end;
+
+    > :not(:last-child) {
+      margin-right: 8px;
+    }
+  `,
+})

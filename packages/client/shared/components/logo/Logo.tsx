@@ -55,7 +55,7 @@ export const Logo = () => {
         rx="1"
         transform="matrix(0.78108 -0.624431 0.78108 0.624431 0.610298 23.1176)"
         stroke="#777A8F"
-        stroke-width="2"
+        strokeWidth="2"
       />
       <rect
         x="1.56216"
@@ -64,7 +64,7 @@ export const Logo = () => {
         rx="1"
         transform="matrix(0.78108 -0.624431 0.78108 0.624431 0.610298 15.1176)"
         stroke="#272733"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </svg>
   )

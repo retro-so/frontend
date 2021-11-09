@@ -1,9 +1,9 @@
 import { createStore, createEvent, createEffect, forward, restore } from 'effector'
 import { createGate } from 'effector-react'
 
-import { getSocketConnection } from '../../libs/socket'
-import { api } from '../../api'
-import type { Card, NormalizedResponse } from '../../api'
+import { getSocketConnection } from '../../shared/libs/socket'
+import { api } from '../../shared/api'
+import type { Card, NormalizedResponse } from '../../shared/api'
 
 const socket = getSocketConnection()
 

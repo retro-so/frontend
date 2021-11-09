@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 
 type MenuProps = {}
 
+// TODO: Rename to listbox.
 // TODO: Add keyboard navigation.
 export const Menu: FC<MenuProps> = (props) => {
   const { children } = props

@@ -3,7 +3,7 @@ import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Text } from '@yandex/ui/Text/bundle'
 import styled from '@emotion/styled'
 
-import { Flex } from '../../components/Flex'
+import { Flex } from '../../shared/components'
 import { withAnon } from '../../features/session'
 import background from './background.svg'
 

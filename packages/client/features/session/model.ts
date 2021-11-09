@@ -1,8 +1,8 @@
 import { forward, createStore, createEffect, restore } from 'effector'
 import { useStore, createGate } from 'effector-react'
 
-import { api } from '../../api'
-import type { User } from '../../api'
+import { api } from '../../shared/api'
+import type { User } from '../../shared/api'
 
 const fetchSessionFx = createEffect(api.fetchMe)
 

@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { Container } from './Card'
+// import { Container } from './Card'
 import { EditableCardContent } from './EditableCardContent'
 
 interface EditableCardProps {
@@ -12,8 +12,8 @@ export const EditableCard: FC<EditableCardProps> = (props) => {
   const { onAction, onCancel } = props
 
   return (
-    <Container>
+    <div>
       <EditableCardContent variant="create" content="" onAction={onAction} onCancel={onCancel} />
-    </Container>
+    </div>
   )
 }

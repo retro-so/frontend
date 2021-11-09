@@ -2,10 +2,8 @@ import { FC } from 'react'
 import styled from '@emotion/styled'
 import { Button } from '@yandex/ui/Button/desktop/bundle'
 
-import { MoreIcon } from '../Icons/MoreIcon'
-import { TrashIcon } from '../Icons/TrashIcon'
-import { Dropdown } from '../Dropdown'
-import { Menu, Item } from '../Menu'
+import { More, Trash } from '../../shared/icons'
+import { Dropdown, Menu, Item } from '../../shared/components'
 
 interface DropdownMenuProps {
   onDeleteAction: () => void
@@ -17,11 +15,11 @@ export const DropdownMenu: FC<DropdownMenuProps> = (props) => {
   return (
     <Dropdown useLegacyRef>
       <MoreButton size="s" view="clear">
-        <MoreIcon />
+        <More />
       </MoreButton>
       <Menu>
         <Item onClick={onDeleteAction} color="red">
-          <TrashIcon />
+          <Trash />
           Delete
         </Item>
       </Menu>

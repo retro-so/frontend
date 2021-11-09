@@ -1,8 +1,9 @@
-import { FC, ImgHTMLAttributes } from 'react'
+import { FC } from 'react'
 import { Text } from '@yandex/ui/Text/bundle'
 import { component, css } from '@steely/react'
 
-import { useUser } from '../features/session'
+import { useUser } from '../../features/session'
+import { UserAvatar } from '../../shared/components'
 
 export const User: FC = () => {
   const { avatarUrl, displayName } = useUser()
@@ -10,7 +11,7 @@ export const User: FC = () => {
   return (
     <Container>
       <Text typography="control-m">{displayName}</Text>
-      <Avatar src={avatarUrl} />
+      <UserAvatar size="m" src={avatarUrl} />
     </Container>
   )
 }
@@ -20,14 +21,6 @@ const Container = component('div', {
     display: flex;
     align-items: center;
     user-select: none;
-  `,
-})
-
-const Avatar = component<ImgHTMLAttributes<HTMLImageElement>>('img', {
-  styles: css`
-    border-radius: 50%;
-    height: 40px;
-    width: 40px;
-    margin-left: 8px;
+    gap: 8px;
   `,
 })

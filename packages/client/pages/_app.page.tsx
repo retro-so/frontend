@@ -3,10 +3,10 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useGate, useStore } from 'effector-react'
 
-import { createSocketConnection } from '../libs/socket'
+import { createSocketConnection } from '../shared/libs/socket'
 import { $isLoading, AppGate } from '../features/session'
-import { GlobalStyles } from '../components/GlobalStyles'
-import { LegoThemeProvider } from '../components/LegoThemeProvider'
+import { GlobalStyles } from '../app/GlobalStyles'
+import { LegoThemeProvider } from '../app/LegoThemeProvider'
 
 createSocketConnection()
 

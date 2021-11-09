@@ -9,14 +9,19 @@ import {
 } from 'react'
 import styled from '@emotion/styled'
 import { Text } from '@yandex/ui/Text/bundle'
-import { Button } from '@yandex/ui/Button/desktop/bundle'
+import { component, css } from '@steely/react'
+// import { Button } from '@yandex/ui/Button/desktop/bundle'
 import { Textinput } from '@yandex/ui/Textinput/desktop/bundle'
 import { useStoreMap } from 'effector-react'
 
 import { DropdownMenu } from './DropdownMenu'
-import { Card, EditableCard } from '../Card'
-import { PlusIcon } from '../Icons/PlusIcon'
+import { EditableCard } from '../Card'
+import { Button } from '../../shared/components/button'
+import { Plus, MoreHorizontal, Trash } from '../../shared/icons'
 import { $cards, createCard, updateList, deleteList } from '../../pages/board/model'
+
+import { Dropdown, Menu, Item } from '../../shared/components'
+import { Card } from '../../entities/card'
 
 type ListProps = {
   id: string
@@ -24,6 +29,7 @@ type ListProps = {
   boardId: string
 }
 
+// TODO: Использовать css snap API.
 export const List: FC<ListProps> = (props) => {
   const { id, name, boardId } = props
 
@@ -75,7 +81,8 @@ export const List: FC<ListProps> = (props) => {
 
   return (
     <Container>
-      <DropdownMenu onDeleteAction={onDelete} />
+      {/* <DropdownMenu onDeleteAction={onDelete} /> */}
+
       <Inner>
         <Header>
           {isEditMode ? (
@@ -94,6 +101,17 @@ export const List: FC<ListProps> = (props) => {
               </Text>
             </span>
           )}
+          <Dropdown>
+            <Button shape="text" kind="default" size="xs">
+              <MoreHorizontal />
+            </Button>
+            <Menu>
+              <Item onClick={onDelete} color="red">
+                <Trash />
+                Delete
+              </Item>
+            </Menu>
+          </Dropdown>
         </Header>
         <Cards ref={cardsRef}>
           {cards.map((card) => (
@@ -104,8 +122,15 @@ export const List: FC<ListProps> = (props) => {
           )}
         </Cards>
         {!isCreatorMode && (
-          <Button onClick={() => setCreatorMode(true)} className="AddButton" view="clear" size="s">
-            <PlusIcon />
+          <Button
+            wide
+            onClick={() => setCreatorMode(true)}
+            className="AddButton"
+            size="l"
+            shape="text"
+            kind="default"
+            addonBefore={<Plus />}
+          >
             Add card
           </Button>
         )}
@@ -120,7 +145,7 @@ const Container = styled.div`
   flex: 0 0 380px;
 
   .SvgIcon {
-    margin-right: 8px;
+    /* margin-right: 8px; */
   }
 `
 
@@ -136,12 +161,15 @@ const Inner = styled.div`
 `
 
 const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+
   margin-bottom: 16px;
-  padding: 0 8px;
+  padding: 0 12px;
 
   .Text {
     margin: 0;
-    padding: 0 16px;
+    /* padding: 0 16px; */
     cursor: pointer;
   }
 
@@ -171,6 +199,9 @@ const Counter = styled.span`
 `
 
 const Cards = styled.div`
-  padding: 4px 16px;
+  padding: 4px 12px;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `
