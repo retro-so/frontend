@@ -1,6 +1,8 @@
-import { FC, useRef, ComponentProps, MouseEventHandler, forwardRef } from 'react'
+import { useRef, ComponentProps, MouseEventHandler, forwardRef } from 'react'
 import { css, component } from '@steely/react'
 import { useButton, useHover, mergeProps, useForkRef } from 'web-platform-alpha'
+
+import { radius } from '../../design-system'
 
 interface ButtonProps extends ComponentProps<typeof Container> {
   disabled?: boolean
@@ -85,13 +87,13 @@ const Container = component('button', {
       s: css`
         --button-height: 32px;
         --button-vert-padding: 12px;
-        --button-border-radius: 8px;
+        --button-border-radius: ${radius[200]};
         --button-content-gap: 0;
       `,
       l: css`
         --button-height: 40px;
         --button-vert-padding: 0;
-        --button-border-radius: 0;
+        --button-border-radius: ${radius[300]};
         --button-content-gap: 12px;
       `,
     },
@@ -110,10 +112,18 @@ const Container = component('button', {
         --button-fill-hovered: #333342;
         --button-fill-pressed: #404152;
       `,
+      dynamic: css`
+        --button-text: var(--button-kind-dynamic-text);
+        --button-text-hovered: var(--button-kind-dynamic-text);
+        --button-text-pressed: var(--button-kind-dynamic-text);
+        --button-fill-hovered: var(--button-kind-dynamic-fill-hovered);
+        --button-fill-pressed: var(--button-kind-dynamic-fill-pressed);
+      `,
     },
     shape: {
       text: css``,
       fill: css``,
+      ghost: css``,
     },
   },
 })

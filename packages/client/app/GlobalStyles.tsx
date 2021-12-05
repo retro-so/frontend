@@ -26,7 +26,7 @@ export const GlobalStyles: FC = () => (
 
       .Popup2[class] {
         border-radius: 8px;
-        box-shadow: 0px 0px 0px 1px rgba(0, 44, 94, 0.1), 0px 6px 12px -2px rgba(0, 44, 94, 0.15);
+        box-shadow: 0px 0px 0px 1px rgba(0, 44, 94, 0.1), 0px 10px 20px -4px rgba(0, 44, 94, 0.15);
       }
 
       .Popup2[class]::before {

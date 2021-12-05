@@ -21,6 +21,7 @@ export const Dropdown: FC<DropdownProps> = (props) => {
   const [isVisible, setVisible] = useState(false)
   const triggerRef = useRef<HTMLElement>(null)
   const [scopeRef, setScopeRef] = useState<RefObject<HTMLElement>>({ current: null })
+  const triggerOffset = triggerRef.current ? triggerRef.current.offsetHeight * -1 : 0
 
   let [trigger, menu] = Children.toArray(children)
 
@@ -62,11 +63,12 @@ export const Dropdown: FC<DropdownProps> = (props) => {
       <Popup
         target="anchor"
         view="default"
-        direction="bottom"
+        direction="bottom-end"
         scope={scopeRef}
         visible={isVisible}
         anchor={triggerRef}
         onClose={onClose}
+        mainOffset={triggerOffset}
       >
         {menu}
       </Popup>

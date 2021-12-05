@@ -12,5 +12,6 @@ export const Menu: FC<MenuProps> = (props) => {
 }
 
 const Container = styled.div`
-  padding: 4px;
+  padding: 8px;
+  min-width: 192px;
 `

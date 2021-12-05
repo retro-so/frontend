@@ -45,7 +45,7 @@ const BoardPage: FC = withAuth(() => {
       <Canvas>
         <Columns>
           {lists.map((list) => (
-            <List id={list.id} name={list.name} boardId={list.boardId} key={list.id} />
+            <List {...list} key={list.id} />
           ))}
           <F>
             <Button

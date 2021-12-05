@@ -1,39 +1,61 @@
-import { FC, HTMLAttributes } from 'react'
+import { FC, ReactNode } from 'react'
 import styled from '@emotion/styled'
 
-type ItemProps = HTMLAttributes<HTMLDivElement> & {}
+import { palette, radius, dimensions } from '../../design-system'
+
+interface ItemProps {
+  color?: string
+  icon?: ReactNode
+  keybind?: string
+  onAction: () => void
+}
 
 export const Item: FC<ItemProps> = (props) => {
-  const { children, color, ...p } = props
+  const { children, color, onAction, icon, keybind, ...p } = props
 
-  return <Container {...p} data-color={color}>{children}</Container>
+  return (
+    <Container onClick={onAction} data-color={color}>
+      {icon}
+      {children}
+      {keybind && <Keybind>{keybind}</Keybind>}
+    </Container>
+  )
 }
 
 const Container = styled.div`
-  border-radius: 6px;
-  padding: 8px;
-  display: flex;
-  align-items: center;
+  border-radius: ${radius[150]};
+  padding: ${dimensions[200]};
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto 1fr auto;
+  gap: ${dimensions[200]};
+
   cursor: pointer;
   user-select: none;
-  color: var(--color-control-typo-primary);
+  color: ${palette.blueGrey[1600]};
   font-family: var(--typography-font-family);
   font-size: var(--text-control-size-m-font-size);
   line-height: var(--text-control-size-m-line-height);
 
   &:hover {
-    background-color: #f1f2f5;
+    background-color: ${palette.blueGrey[100]};
   }
 
   &:active {
-    background-color: #eaecf0;
-  }
-
-  &[data-color='red'] {
-    color: #f00;
+    background-color: ${palette.blueGrey[200]};
   }
 
   .SvgIcon {
-    margin-right: 8px;
+    color: ${palette.blueGrey[1500]};
   }
+
+  &[data-color='red'],
+  &[data-color='red'] .SvgIcon {
+    color: ${palette.red[1000]};
+  }
+`
+
+const Keybind = styled.span`
+  color: ${palette.blueGrey[1200]};
 `

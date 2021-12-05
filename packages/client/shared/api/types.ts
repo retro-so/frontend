@@ -26,6 +26,7 @@ export interface List {
   id: string
   index: number
   name: string
+  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray' | 'mint'
 }
 
 export interface Board {

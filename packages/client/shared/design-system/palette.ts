@@ -1,4 +1,4 @@
-export const colors = {
+export const palette = {
   red: {
     50: '#FFF5F2',
     100: '#FFE2DB',
