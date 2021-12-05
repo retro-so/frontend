@@ -31,4 +31,11 @@ export class ListEntity extends BaseEntity {
 
   @OneToMany(() => CardEntity, (card) => card.list)
   cards: CardEntity[]
+
+  @Column({
+    type: 'enum',
+    enum: ['green', 'yellow', 'blue', 'red', 'gray', 'mint'],
+    default: 'gray',
+  })
+  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray' | 'mint'
 }
